@@ -3,40 +3,54 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels ="clr-namespace:MqttListener.ViewModels"
+        xmlns:views ="clr-namespace:MqttListener.Views"
+        xmlns:converters="clr-namespace:MqttListener.Converters"
         xmlns:local="clr-namespace:MqttListener"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <DockPanel LastChildFill="True">
-        <StackPanel DockPanel.Dock="Top"
+    <Window.Resources>
+        <ResourceDictionary>
+            <DataTemplate DataType="{x:Type viewModels:ConnectViewModel}">
+                <views:ConnectView></views:ConnectView>
+            </DataTemplate>
+            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"></converters:NullToVisibilityConverter>
+            <converters:NullToVisibilityConverter IsInversed="True" x:Key="InversedNullToVisibilityConverter"></converters:NullToVisibilityConverter>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <DockPanel LastChildFill="True"
+                   Visibility="{Binding ConnectViewModel, Converter={StaticResource InversedNullToVisibilityConverter}}">
+            <StackPanel DockPanel.Dock="Top"
                     Orientation="Horizontal">
-            <StackPanel.Resources>
-                <Style TargetType="Button">
-                    <Style.Setters>
-                        <Setter Property="Margin" Value="4"></Setter>
-                    </Style.Setters>
-                </Style>
-            </StackPanel.Resources>
-            <Button Content="Set topics"
-                    Command="{Binding SetTopicsCommand}"></Button>
-            <Button Content="Connect" Command="{Binding ConnectCommand}"></Button>
-            <Button Content="Disconnect" Command="{Binding DisconnectCommand}"></Button>
-        </StackPanel>
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-            <TextBlock Text="Last topic:"></TextBlock>
-            <TextBlock Text="{Binding LastTopic}"></TextBlock>
-            <TextBlock Text=":"></TextBlock>
-            <TextBlock Text="{Binding LastMessage}"></TextBlock>
-        </StackPanel>
-        <TreeView ItemsSource="{Binding Root}">
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Path=Child}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Name}" />
-                        <TextBlock Text=":" />
-                        <TextBlock Text="{Binding Message}" />
-                    </StackPanel>
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-        </TreeView>
-    </DockPanel>
+                <StackPanel.Resources>
+                    <Style TargetType="Button">
+                        <Style.Setters>
+                            <Setter Property="Margin" Value="4"></Setter>
+                        </Style.Setters>
+                    </Style>
+                </StackPanel.Resources>
+                <Button Content="Connect" Command="{Binding ConnectCommand}"></Button>
+                <Button Content="Disconnect" Command="{Binding DisconnectCommand}"></Button>
+            </StackPanel>
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+                <TextBlock Text="Last topic:"></TextBlock>
+                <TextBlock Text="{Binding LastTopic}"></TextBlock>
+                <TextBlock Text=":"></TextBlock>
+                <TextBlock Text="{Binding LastMessage}"></TextBlock>
+            </StackPanel>
+            <TreeView ItemsSource="{Binding Root}">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Path=Child}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name}" />
+                            <TextBlock Text=":" />
+                            <TextBlock Text="{Binding Message}" />
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+        </DockPanel>
+        <ContentControl Content="{Binding ConnectViewModel}" Visibility="{Binding ConnectViewModel, Converter={StaticResource NullToVisibilityConverter}}"></ContentControl>
+    </Grid>
 </Window>
