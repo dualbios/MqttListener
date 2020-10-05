@@ -17,9 +17,8 @@
         <GroupBox Name="Host">
             <StackPanel Orientation="Horizontal">
                 <HeaderedContentControl Header="Protocol">
-                    <ComboBox SelectedValue="{Binding Protocol}">
-                        <ComboBoxItem>mqtt://</ComboBoxItem>
-                    </ComboBox>
+                    <ComboBox ItemsSource="{Binding SupportedProtocols}"
+                              SelectedItem="{Binding Protocol}"></ComboBox>
                 </HeaderedContentControl>
                 <HeaderedContentControl Header="Host">
                     <TextBox Text="{Binding Host}"></TextBox>
@@ -45,10 +44,8 @@
                     <TextBox Text="{Binding Topic}"></TextBox>
                 </HeaderedContentControl>
                 <HeaderedContentControl Header="Qos">
-                    <ComboBox SelectedValue="{Binding Qos}">
-                        <ComboBoxItem>0</ComboBoxItem>
-                        <ComboBoxItem>1</ComboBoxItem>
-                        <ComboBoxItem>2</ComboBoxItem>
+                    <ComboBox SelectedItem="{Binding Qos}"
+                              ItemsSource="{Binding SupportedQos}">
                     </ComboBox>
                 </HeaderedContentControl>
                 <HeaderedContentControl Header="Client id">

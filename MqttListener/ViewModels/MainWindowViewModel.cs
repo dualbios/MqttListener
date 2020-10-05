@@ -13,7 +13,6 @@ namespace MqttListener.ViewModels
 {
     public class MainWindowViewModel : BaseViewModel
     {
-        private readonly string _clientId = "MqttListener";
         private readonly IServiceProvider _serviceProvider;
         private ICommand _connectCommand;
         private ConnectViewModel _connectViewModel;
@@ -36,7 +35,7 @@ namespace MqttListener.ViewModels
 
         public AppConfiguration Configuration { get; private set; }
 
-        public ICommand ConnectCommand => _connectCommand ?? (_connectCommand = new RelayCommand(o => Connect(), x => !IsConnected));
+        public ICommand ConnectCommand => _connectCommand ??= new RelayCommand(o => Connect(), x => !IsConnected);
 
         public ConnectViewModel ConnectViewModel
         {
@@ -44,7 +43,7 @@ namespace MqttListener.ViewModels
             set => SetProperty(ref _connectViewModel, value);
         }
 
-        public ICommand DisconnectCommand => _disconnectCommand ?? (_disconnectCommand = new RelayCommand(o => Disconnect(), x => IsConnected));
+        public ICommand DisconnectCommand => _disconnectCommand ??= new RelayCommand(o => Disconnect(), x => IsConnected);
 
         public bool IsConnected
         {
@@ -74,12 +73,13 @@ namespace MqttListener.ViewModels
 
         private void ConnectAction(ConnectionItem connectionItem)
         {
-            int port = 1883;
-            int.TryParse(connectionItem.Port, out port);
-            byte qos = 0;
-            byte.TryParse(connectionItem.Qos, out qos);
+            if (!int.TryParse(connectionItem.Port, out int port))
+            {
+                port = 1883;
+            }
 
-            //mqttClient = new MqttClient(connectionItem.Host);
+            byte.TryParse(connectionItem.Qos, out byte qos);
+
             mqttClient = new MqttClient(connectionItem.Host, port, false, null, null, MqttSslProtocols.None);
 
             mqttClient.Connect(Configuration.ClientId, connectionItem.Username, connectionItem.Password);
@@ -92,10 +92,12 @@ namespace MqttListener.ViewModels
                 ConnectViewModel = null;
             }
 
-            //Configuration = _serviceProvider.GetService<IOptions<AppConfiguration>>().Value;
             if (!IsConnected)
             {
-                throw new Exception("Cant connect.");
+                mqttClient.MqttMsgPublishReceived -= MqttClient_MqttMsgPublishReceived;
+                mqttClient = null;
+
+                throw new Exception("Can not instantiate connection.");
             }
         }
 
@@ -108,6 +110,9 @@ namespace MqttListener.ViewModels
             mqttClient.MqttMsgPublishReceived -= MqttClient_MqttMsgPublishReceived;
             mqttClient = null;
             IsConnected = false;
+
+            Configuration = _serviceProvider.GetService<IOptions<AppConfiguration>>().Value;
+
             Connect();
         }
 
@@ -116,11 +121,10 @@ namespace MqttListener.ViewModels
             TopicItem item = root.Child.FirstOrDefault(x => x.Name == topicItem.Name);
             if (item != null && topicItem.Child.Count == 0)
             {
-                // item exists
-                // update value
                 item.Message = topicItem.Message;
                 return;
             }
+
             if (item != null)
             {
                 InsertTopic(topicItem.Child[0], item);

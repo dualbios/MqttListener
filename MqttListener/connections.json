@@ -1,17 +1,19 @@
 {
-  "Connections": [
-    {
-      "ConnectionName": "212312",
-      "Host": "192.168.0.111",
-      "Port": "1883",
-      "Topic": "#" 
-    },
-    {
-      "ConnectionName": "222",
-      "Host": "57567",
-      "Port": "6"
-    }
-  ],
+  "ConnectionsList" : {
+    "Connections": [
+      {
+        "ConnectionName": "212312",
+        "Host": "192.168.0.111",
+        "Port": "1883",
+        "Topic": "#"
+      },
+      {
+        "ConnectionName": "222",
+        "Host": "57567",
+        "Port": "6"
+      }
+    ]
+  },
 
   "ClientId": "MqttListener"
 }

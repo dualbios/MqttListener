@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -21,10 +22,12 @@ namespace MqttListener.ViewModels
         private string _errorMessage;
         private bool _isConnecting;
         private ConnectionItem _selectedItem;
+        private IWritableOptions<ConnectionsList> _writableOptions;
 
         public ConnectViewModel(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
+            _writableOptions = _serviceProvider.GetService<IWritableOptions<ConnectionsList>>();
         }
 
         public ICommand CancelConmmand => _cancelConmmand ??= new RelayCommand(x => Cancel());
@@ -62,7 +65,7 @@ namespace MqttListener.ViewModels
         {
             _connectAction = connectAction;
             var config = _serviceProvider.GetService<IOptions<AppConfiguration>>().Value;
-            _connections = new ObservableCollection<ConnectionItem>(config.Connections);
+            _connections = new ObservableCollection<ConnectionItem>(config.ConnectionsList.Connections);
             if (_connections.Count > 0)
             {
                 SelectedItem = _connections[0];
@@ -100,6 +103,10 @@ namespace MqttListener.ViewModels
 
         private void SaveAppSettings()
         {
+            _writableOptions.Update(x =>
+            {
+                x.Connections = _connections.ToArray();
+            });
         }
     }
 }

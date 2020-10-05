@@ -13,35 +13,23 @@ namespace MqttListener
     /// </summary>
     public partial class App : Application
     {
-        private const string connectionsJson = "connections.json";
+        private const string connectionsJsonFileName = "connections.json";
         public IConfiguration Configuration { get; private set; }
 
         public IServiceProvider Provider { get; private set; }
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            IServiceCollection services = new ServiceCollection();
             ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.Add<WritableJsonConfigurationSource>(
-                s =>
-                {
-                    s.FileProvider = null;
-                    s.Path = connectionsJson;
-                    s.Optional = false;
-                    s.ReloadOnChange = true;
-                    s.ResolveFileProvider();
-                });
-            configurationBuilder.AddJsonFile(connectionsJson, true, reloadOnChange: true);
 
+            configurationBuilder.AddJsonFile(connectionsJsonFileName, true, reloadOnChange: true);
             Configuration = configurationBuilder.Build();
 
-            IServiceCollection services = new ServiceCollection();
             services.Configure<AppConfiguration>(Configuration);
+            services.ConfigureWritable<ConnectionsList>(Configuration.GetSection("ConnectionsList"), connectionsJsonFileName);
 
             Provider = services.BuildServiceProvider();
-
-            AppConfiguration settings = Provider.GetRequiredService<IOptions<AppConfiguration>>().Value;
-
-            //string s = Configuration["Connections"];
 
             var context = new MainWindowViewModel(Provider);
             var view = new MainWindow() { DataContext = context };

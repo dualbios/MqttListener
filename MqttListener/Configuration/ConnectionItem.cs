@@ -1,6 +1,8 @@
-﻿using MqttListener.ViewModels;
+﻿using System.Collections;
+using System.Collections.Generic;
+using MqttListener.ViewModels;
 
-namespace MqttListener
+namespace MqttListener.Configuration
 {
     public class ConnectionItem : BaseViewModel
     {
@@ -15,7 +17,12 @@ namespace MqttListener
 
         public ConnectionItem()
         {
+            SupportedProtocols = new[] {"mqtt://"};
+            SupportedQos = new[] {"0", "1", "2"};
         }
+
+        public IEnumerable<string> SupportedProtocols { get; private set; }
+        public IEnumerable<string> SupportedQos { get; private set; }
 
         public string ConnectionName
         {
