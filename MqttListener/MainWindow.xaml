@@ -1,0 +1,42 @@
+﻿<Window x:Class="MqttListener.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MqttListener"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <DockPanel LastChildFill="True">
+        <StackPanel DockPanel.Dock="Top"
+                    Orientation="Horizontal">
+            <StackPanel.Resources>
+                <Style TargetType="Button">
+                    <Style.Setters>
+                        <Setter Property="Margin" Value="4"></Setter>
+                    </Style.Setters>
+                </Style>
+            </StackPanel.Resources>
+            <Button Content="Set topics"
+                    Command="{Binding SetTopicsCommand}"></Button>
+            <Button Content="Connect" Command="{Binding ConnectCommand}"></Button>
+            <Button Content="Disconnect" Command="{Binding DisconnectCommand}"></Button>
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+            <TextBlock Text="Last topic:"></TextBlock>
+            <TextBlock Text="{Binding LastTopic}"></TextBlock>
+            <TextBlock Text=":"></TextBlock>
+            <TextBlock Text="{Binding LastMessage}"></TextBlock>
+        </StackPanel>
+        <TreeView ItemsSource="{Binding Root}">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Path=Child}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Name}" />
+                        <TextBlock Text=":" />
+                        <TextBlock Text="{Binding Message}" />
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+    </DockPanel>
+</Window>
