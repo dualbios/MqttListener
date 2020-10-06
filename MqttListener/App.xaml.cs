@@ -31,7 +31,7 @@ namespace MqttListener
 
             Provider = services.BuildServiceProvider();
 
-            var context = new MainWindowViewModel(Provider);
+            var context = new MainWindowViewModel();
             var view = new MainWindow() { DataContext = context };
             view.Show();
         }
