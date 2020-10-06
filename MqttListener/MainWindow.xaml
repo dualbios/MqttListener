@@ -11,8 +11,8 @@
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
         <ResourceDictionary>
-            <DataTemplate DataType="{x:Type viewModels:_TestViewModel}">
-                <views:_TestView></views:_TestView>
+            <DataTemplate DataType="{x:Type viewModels:ServerViewModel}">
+                <views:ServerView></views:ServerView>
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewModels:OpenConnectionDialogViewModel}">
                 <views:OpenConnectionControlView></views:OpenConnectionControlView>
@@ -27,7 +27,13 @@
     <Grid>
         <ContentControl Content="{Binding ServerViewModel}"
                         Visibility="{Binding DialogViewModel, Converter={StaticResource InversedNullToVisibilityConverter}}"></ContentControl>
-        <ContentControl Content="{Binding DialogViewModel}"
-                        Visibility="{Binding DialogViewModel, Converter={StaticResource NullToVisibilityConverter}}"></ContentControl>
+        <Grid Visibility="{Binding DialogViewModel, Converter={StaticResource NullToVisibilityConverter}}"
+              Background="#BF7C7C7C">
+            <Border Margin="32"
+                    BorderThickness="1"
+                    BorderBrush="Black">
+                <ContentControl Content="{Binding DialogViewModel}"></ContentControl>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

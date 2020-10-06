@@ -2,6 +2,6 @@
 {
     public interface IDialog
     {
-        void Initialize(IDialogHost dialogHost);
+        void OnOpen(IDialogHost dialogHost);
     }
 }

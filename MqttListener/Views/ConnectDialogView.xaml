@@ -4,13 +4,34 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MqttListener.Views"
+             xmlns:converters="clr-namespace:MqttListener.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="250" d:DesignWidth="400">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></converters:BoolToVisibilityConverter>
+            <converters:BoolToVisibilityConverter IsInverted="True" x:Key="InvertedBoolToVisibilityConverter"></converters:BoolToVisibilityConverter>
+            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"></converters:NullToVisibilityConverter>
+            <converters:NullToVisibilityConverter IsInversed="True" x:Key="InvertedNullToVisibilityConverter"></converters:NullToVisibilityConverter>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <StackPanel Orientation="Vertical"
+                VerticalAlignment="Center"
                 HorizontalAlignment="Center"
-                VerticalAlignment="Center">
-        <TextBlock Text ="Connecting ... "></TextBlock>
-        <Button Content="Cancel" Command="{Binding CancelCommand}"></Button>
-            
+                MaxWidth="250"
+                Visibility="{Binding IsConnecting, Converter={StaticResource BoolToVisibilityConverter}}">
+        <TextBlock Text="Connecting..."
+                   HorizontalAlignment="Center"
+                   Visibility="{Binding ErrorMessage, Converter={StaticResource InvertedNullToVisibilityConverter}}"></TextBlock>
+        <TextBlock Text="{Binding ErrorMessage}"
+                   TextWrapping="Wrap"
+                   HorizontalAlignment="Center"
+                   Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}}"></TextBlock>
+        <ProgressBar IsIndeterminate="True"
+                     Width="150"
+                     Visibility="{Binding ErrorMessage, Converter={StaticResource InvertedNullToVisibilityConverter}}"></ProgressBar>
+        <Button Content="Cancel"
+                Command="{Binding CancelCommand}"
+                Width="75"></Button>
     </StackPanel>
 </UserControl>

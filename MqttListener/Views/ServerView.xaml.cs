@@ -16,9 +16,9 @@ namespace MqttListener.Views
     /// <summary>
     /// Interaction logic for _TestView.xaml
     /// </summary>
-    public partial class _TestView : UserControl
+    public partial class ServerView : UserControl
     {
-        public _TestView()
+        public ServerView()
         {
             InitializeComponent();
         }

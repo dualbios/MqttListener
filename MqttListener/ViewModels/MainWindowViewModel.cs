@@ -8,15 +8,17 @@ namespace MqttListener.ViewModels
 {
     public class MainWindowViewModel : BaseViewModel, IDialogHost
     {
+        private readonly IServiceProvider _serviceProvider;
         private readonly Stack _dialogsQueue = new Stack();
         private Action _cancelAction = null;
         private IDialog _dialogViewModel;
         private Action _okAction = null;
         private object _serverViewModel;
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(IServiceProvider serviceProvider)
         {
-            ServerViewModel = new _TestViewModel(this);
+            _serviceProvider = serviceProvider;
+            ServerViewModel = new ServerViewModel(serviceProvider, this);
         }
 
         public IDialog DialogViewModel
@@ -53,7 +55,7 @@ namespace MqttListener.ViewModels
 
         public Task Show(IDialog dialog, Action okAction, Action cancelAction)
         {
-            dialog.Initialize(this);
+            dialog.OnOpen(this);
 
             _dialogsQueue.Push(new DialogItem(DialogViewModel, _okAction, _cancelAction));
 

@@ -8,9 +8,10 @@
         "Topic": "#"
       },
       {
-        "ConnectionName": "222",
-        "Host": "57567",
-        "Port": "6"
+        "ConnectionName": "test.mosquitto.org",
+        "Host": "test.mosquitto.org",
+        "Port": "",
+        "Topic": "#"
       }
     ]
   },

@@ -3,15 +3,46 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converters="clr-namespace:MqttListener.Converters"
              xmlns:local="clr-namespace:MqttListener.Views"
+             xmlns:views ="clr-namespace:MqttListener.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <StackPanel Orientation="Vertical"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
-        <TextBox Text="Open Connection Control"></TextBox>
-        <Button Content="Ok" Command="{Binding SelectConnectionCommand}"></Button>
-        <Button Content="Cancel" Command="{Binding CancelCommand}"></Button>
-
-    </StackPanel>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></converters:BoolToVisibilityConverter>
+            <converters:BoolToVisibilityConverter IsInverted="True" x:Key="InvertedBoolToVisibilityConverter"></converters:BoolToVisibilityConverter>
+            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"></converters:NullToVisibilityConverter>
+            <converters:NullToVisibilityConverter IsInversed="True" x:Key="InvertedNullToVisibilityConverter"></converters:NullToVisibilityConverter>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <DockPanel LastChildFill="True"
+               Visibility="{Binding IsConnecting, Converter={StaticResource InvertedBoolToVisibilityConverter}}">
+        <StackPanel DockPanel.Dock="Bottom">
+            <Button Content="Connect"
+                    Margin="8"
+                    Command="{Binding SelectConnectionCommand}"
+                    HorizontalAlignment="Right"></Button>
+        </StackPanel>
+        <DockPanel LastChildFill="True">
+            <ListBox ItemsSource="{Binding Connections}"
+                     SelectedItem="{Binding SelectedItem}"
+                     DockPanel.Dock="Left"
+                     x:Name="ConnectionList">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="{Binding ConnectionName}"></TextBlock>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Protocol}"></TextBlock>
+                                <TextBlock Text="{Binding Host}"></TextBlock>
+                                <TextBlock Text="{Binding Port}"></TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <views:ConnectionItemView DataContext="{Binding SelectedItem, ElementName=ConnectionList, Mode=OneWay}"></views:ConnectionItemView>
+        </DockPanel>
+    </DockPanel>
 </UserControl>

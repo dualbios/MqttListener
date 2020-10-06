@@ -2,7 +2,6 @@
 using System.Windows;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using MqttListener.Configuration;
 using MqttListener.ViewModels;
 
@@ -31,7 +30,7 @@ namespace MqttListener
 
             Provider = services.BuildServiceProvider();
 
-            var context = new MainWindowViewModel();
+            var context = new MainWindowViewModel(Provider);
             var view = new MainWindow() { DataContext = context };
             view.Show();
         }

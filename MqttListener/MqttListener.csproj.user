@@ -19,7 +19,7 @@
     <Compile Update="Views\OpenConnectionControlView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\_TestView.xaml.cs">
+    <Compile Update="Views\ServerView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -42,7 +42,7 @@
     <Page Update="Views\OpenConnectionControlView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\_TestView.xaml">
+    <Page Update="Views\ServerView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
