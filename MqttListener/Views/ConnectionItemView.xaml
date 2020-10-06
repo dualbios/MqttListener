@@ -7,41 +7,42 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel Orientation="Vertical">
-        <GroupBox Name="Connection">
-            <StackPanel Orientation="Horizontal">
-                <HeaderedContentControl Header="Name">
-                    <TextBox Text="{Binding ConnectionName}"></TextBox>
-                </HeaderedContentControl>
-            </StackPanel>
+        <StackPanel.Resources>
+            <Style TargetType="HeaderedContentControl">
+                <Setter Property="Margin" Value="04 0"></Setter>
+            </Style>
+        </StackPanel.Resources>
+        <GroupBox Header="Connection">
+            <TextBox Text="{Binding ConnectionName}" Margin="4 2"></TextBox>
         </GroupBox>
-        <GroupBox Name="Host">
+        <GroupBox Header="Host">
             <StackPanel Orientation="Horizontal">
                 <HeaderedContentControl Header="Protocol">
                     <ComboBox ItemsSource="{Binding SupportedProtocols}"
-                              SelectedItem="{Binding Protocol}"></ComboBox>
+                              SelectedItem="{Binding Protocol}" VerticalAlignment="Center" Width="166"></ComboBox>
                 </HeaderedContentControl>
                 <HeaderedContentControl Header="Host">
-                    <TextBox Text="{Binding Host}"></TextBox>
+                    <TextBox Text="{Binding Host}" Width="373"></TextBox>
                 </HeaderedContentControl>
                 <HeaderedContentControl Header="Port">
-                    <TextBox Text="{Binding Port}"></TextBox>
+                    <TextBox Text="{Binding Port}" Width="104"></TextBox>
                 </HeaderedContentControl>
             </StackPanel>
         </GroupBox>
-        <GroupBox Name="Sequrity">
+        <GroupBox Header="Sequrity">
             <StackPanel Orientation="Horizontal">
                 <HeaderedContentControl Header="Username">
-                    <TextBox Text="{Binding Username}"></TextBox>
+                    <TextBox Text="{Binding Username}" Width="165"></TextBox>
                 </HeaderedContentControl>
                 <HeaderedContentControl Header="Password">
-                    <PasswordBox x:Name="PasswordBox"></PasswordBox>
+                    <PasswordBox x:Name="PasswordBox" Width="165"></PasswordBox>
                 </HeaderedContentControl>
             </StackPanel>
         </GroupBox>
-        <GroupBox Name="Advanced">
+        <GroupBox Header="Advanced">
             <StackPanel Orientation="Horizontal">
                 <HeaderedContentControl Header="Topic">
-                    <TextBox Text="{Binding Topic}"></TextBox>
+                    <TextBox Text="{Binding Topic}" Width="229"></TextBox>
                 </HeaderedContentControl>
                 <HeaderedContentControl Header="Qos">
                     <ComboBox SelectedItem="{Binding Qos}"
@@ -49,7 +50,7 @@
                     </ComboBox>
                 </HeaderedContentControl>
                 <HeaderedContentControl Header="Client id">
-                    <TextBox Text="{Binding ClientId}"></TextBox>
+                    <TextBox Text="{Binding ClientId}" Width="466"></TextBox>
                 </HeaderedContentControl>
             </StackPanel>
         </GroupBox>

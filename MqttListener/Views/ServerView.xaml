@@ -5,24 +5,25 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:MqttListener.Views"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="600">
     <DockPanel LastChildFill="True">
         <StackPanel DockPanel.Dock="Top"
                     Orientation="Horizontal">
-            <StackPanel.Resources>
-                <Style TargetType="Button">
-                    <Style.Setters>
-                        <Setter Property="Margin" Value="4"></Setter>
-                    </Style.Setters>
-                </Style>
-            </StackPanel.Resources>
-            <Button Content="Disconnect" Command="{Binding DisconnectCommand}"></Button>
+            <TextBlock Text="{Binding Title}" 
+                       FontSize="24"
+                       Margin="8 0"></TextBlock>
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Bottom"
+                    Margin="8">
+            <Button Content="Disconnect"
+                    HorizontalAlignment="Right"
+                    Command="{Binding DisconnectCommand}"></Button>
         </StackPanel>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-            <TextBlock Text="Last topic:"></TextBlock>
-            <TextBlock Text="{Binding LastTopic}"></TextBlock>
-            <TextBlock Text=":"></TextBlock>
-            <TextBlock Text="{Binding LastMessage}"></TextBlock>
+            <TextBlock Text="Last topic:" Margin="4 0"></TextBlock>
+            <TextBlock Text="{Binding LastTopic}" Margin="4 0"></TextBlock>
+            <TextBlock Text=":" Margin="4 0"></TextBlock>
+            <TextBlock Text="{Binding LastMessage}" Margin="4 0"></TextBlock>
         </StackPanel>
         <TreeView ItemsSource="{Binding Root}">
             <TreeView.ItemTemplate>

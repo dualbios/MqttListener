@@ -31,6 +31,8 @@
                      Width="150"
                      Visibility="{Binding ErrorMessage, Converter={StaticResource InvertedNullToVisibilityConverter}}"></ProgressBar>
         <Button Content="Cancel"
+                Margin="8"
+                HorizontalAlignment="Center"
                 Command="{Binding CancelCommand}"
                 Width="75"></Button>
     </StackPanel>

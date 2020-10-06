@@ -21,6 +21,8 @@ namespace MqttListener.ViewModels
         private bool _isConnected;
         private string _lastMessage;
         private string _lastTopic;
+        private IList<TopicItem> _root;
+        private string _title;
         private MqttClient mqttClient;
 
         public ServerViewModel(IServiceProvider serviceProvider, IDialogHost dialogHost)
@@ -37,21 +39,6 @@ namespace MqttListener.ViewModels
         public AppConfiguration Configuration { get; private set; }
 
         public ICommand DisconnectCommand => _disconnectCommand ??= new RelayCommand(x => Disconnect());
-
-        private void Disconnect()
-        {
-            if (mqttClient.IsConnected)
-            {
-                mqttClient.Disconnect();
-                mqttClient.MqttMsgPublishReceived -= MqttClient_MqttMsgPublishReceived;
-                mqttClient = null;
-                IsConnected = false;
-
-                Configuration = _serviceProvider.GetService<IOptions<AppConfiguration>>().Value;
-
-                _dialogHost.Show(new OpenConnectionDialogViewModel(_serviceProvider, ConnectAction), OpenOkAction, CancelAction);
-            }
-        }
 
         public bool IsConnected
         {
@@ -71,7 +58,17 @@ namespace MqttListener.ViewModels
             private set { SetProperty(ref _lastTopic, value); }
         }
 
-        public IList<TopicItem> Root { get; }
+        public IList<TopicItem> Root
+        {
+            get => _root;
+            private set => SetProperty(ref _root, value);
+        }
+
+        public string Title
+        {
+            get => _title;
+            private set => SetProperty(ref _title, value);
+        }
 
         private void CancelAction()
         {
@@ -100,6 +97,34 @@ namespace MqttListener.ViewModels
                 mqttClient = null;
 
                 throw new Exception("Can not instantiate connection.");
+            }
+
+            Title = connectionItem.ConnectionName;
+        }
+
+        private void Disconnect()
+        {
+           if (mqttClient != null)
+            {
+                try
+                {
+                    mqttClient.Disconnect();
+                    mqttClient.MqttMsgPublishReceived -= MqttClient_MqttMsgPublishReceived;
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    mqttClient = null;
+                    IsConnected = false;
+                }
+
+                Root = new[] { new TopicItem("Root") }.ToList();
+
+                Configuration = _serviceProvider.GetService<IOptions<AppConfiguration>>().Value;
+
+                _dialogHost.Show(new OpenConnectionDialogViewModel(_serviceProvider, ConnectAction), OpenOkAction, CancelAction);
             }
         }
 
