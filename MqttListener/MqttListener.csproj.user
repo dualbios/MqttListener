@@ -10,12 +10,6 @@
     <Compile Update="Views\ConnectDialogView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\ConnectionItemView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\ConnectView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Views\OpenConnectionControlView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -28,15 +22,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\ConnectDialogView.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\ConnectionItemView.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\ConnectView.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\OpenConnectionControlView.xaml">
