@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:MqttListener.Views"
              xmlns:views ="clr-namespace:MqttListener.Views"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="1000">
+             d:DesignHeight="600" d:DesignWidth="1000">
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></converters:BoolToVisibilityConverter>
@@ -42,6 +42,16 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+            <Expander Header="Advansed"
+                      DockPanel.Dock="Bottom"
+                      IsExpanded="False">
+                <Grid Margin="4">
+                    <HeaderedContentControl Header="Client id"
+                                            HorizontalAlignment="Stretch">
+                        <TextBox Text="{Binding ClientId}"></TextBox>
+                    </HeaderedContentControl>
+                </Grid>
+            </Expander>
             <ScrollViewer>
                 <views:ConnectionItemView DataContext="{Binding SelectedItem, ElementName=ConnectionList, Mode=OneWay}"></views:ConnectionItemView>
             </ScrollViewer>

@@ -36,11 +36,11 @@ namespace MqttListener.Configuration
             string physicalPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), _file);
 
             var jObject = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(physicalPath));
-            T sectionObject;
-            if (jObject.TryGetValue(_section, out JToken section))
-                sectionObject = JsonConvert.DeserializeObject<T>(section.ToString());
-            else
-                sectionObject = Value ?? new T();
+            T sectionObject = Value;
+            //if (jObject.TryGetValue(_section, out JToken section))
+            //    sectionObject = JsonConvert.DeserializeObject<T>(section.ToString());
+            //else
+            //    sectionObject = Value ?? new T();
 
             applyChanges(sectionObject);
 

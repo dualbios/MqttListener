@@ -12,7 +12,7 @@ namespace MqttListener.Configuration
             string file = "appsettings.json") where T : class, new()
         {
             services.Configure<T>(section);
-            services.AddTransient<IWritableOptions<T>>(provider =>
+            services.AddSingleton<IWritableOptions<T>>(provider =>
             {
                 var configuration = (IConfigurationRoot)provider.GetService<IConfiguration>();
                 var options = provider.GetService<IOptionsMonitor<T>>();

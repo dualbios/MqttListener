@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Input;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using MqttListener.Configuration;
 using MqttListener.Interfaces;
 
@@ -21,14 +20,18 @@ namespace MqttListener.ViewModels
 
         private RelayCommand _selectConnectionCommand;
         private ConnectionItem _selectedItem;
-        private IWritableOptions<ConnectionsList> _writableOptions;
+        private IWritableOptions<ConnectionsList> _connectionListOptions;
+        private IWritableOptions<AppConfiguration> _appConfigurationOptions;
+
+        private string _clientId;
 
         public OpenConnectionDialogViewModel(IServiceProvider serviceProvider, Action<ConnectionItem, CancellationToken> connectAction)
         {
             _connectAction = connectAction;
 
             _serviceProvider = serviceProvider;
-            _writableOptions = _serviceProvider.GetService<IWritableOptions<ConnectionsList>>();
+            _connectionListOptions = _serviceProvider.GetService<IWritableOptions<ConnectionsList>>();
+            _appConfigurationOptions = _serviceProvider.GetService<IWritableOptions<AppConfiguration>>();
         }
 
         public ICommand CancelCommand => _cancelCommand ??= new RelayCommand(x => _dialogHost.CloseDialog(false));
@@ -50,8 +53,10 @@ namespace MqttListener.ViewModels
         {
             _dialogHost = dialogHost;
 
-            var config = _serviceProvider.GetService<IOptions<AppConfiguration>>().Value;
-            _connections = new ObservableCollection<ConnectionItem>(config.ConnectionsList.Connections);
+            var connectionsList = _connectionListOptions.Value;
+            ClientId = _appConfigurationOptions.Value.ClientId;
+
+            _connections = new ObservableCollection<ConnectionItem>(connectionsList.Connections);
             if (_connections.Count > 0)
             {
                 SelectedItem = _connections[0];
@@ -60,9 +65,15 @@ namespace MqttListener.ViewModels
             OnPropertyChanged(null);
         }
 
+        public string ClientId
+        {
+            get => _clientId;
+            set => SetProperty(ref _clientId, value);
+        }
+
         private void Connected()
         {
-            _writableOptions.Update(x =>
+            _connectionListOptions.Update(x =>
             {
                 x.Connections = _connections.ToArray();
             });
@@ -72,6 +83,14 @@ namespace MqttListener.ViewModels
 
         private void SelectConnection()
         {
+            if (ClientId != _appConfigurationOptions.Value.ClientId)
+            {
+                _appConfigurationOptions.Update(x =>
+                {
+                    x.ClientId = ClientId;
+                });
+            }
+
             _dialogHost.Show(new ConnectDialogViewModel(SelectedItem, _connectAction), Connected, null);
         }
     }

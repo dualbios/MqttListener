@@ -1,5 +1,5 @@
 {
-  "ConnectionsList" : {
+  "ConnectionsList": {
     "Connections": [
       {
         "ConnectionName": "212312",
@@ -15,6 +15,7 @@
       }
     ]
   },
-
-  "ClientId": "MqttListener"
+  "AppConfiguration": {
+     "ClientId": "MqttListener"
+  }
 }

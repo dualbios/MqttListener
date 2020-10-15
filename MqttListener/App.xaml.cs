@@ -25,8 +25,8 @@ namespace MqttListener
             configurationBuilder.AddJsonFile(connectionsJsonFileName, true, reloadOnChange: true);
             Configuration = configurationBuilder.Build();
 
-            services.Configure<AppConfiguration>(Configuration);
             services.ConfigureWritable<ConnectionsList>(Configuration.GetSection("ConnectionsList"), connectionsJsonFileName);
+            services.ConfigureWritable<AppConfiguration>(Configuration.GetSection("AppConfiguration"), connectionsJsonFileName);
 
             Provider = services.BuildServiceProvider();
 

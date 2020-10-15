@@ -24,19 +24,18 @@ namespace MqttListener.ViewModels
         private IList<TopicItem> _root;
         private string _title;
         private MqttClient mqttClient;
+        private IWritableOptions<AppConfiguration> _appConfigurationOptions;
 
         public ServerViewModel(IServiceProvider serviceProvider, IDialogHost dialogHost)
         {
             _serviceProvider = serviceProvider;
 
             Root = new[] { new TopicItem("Root") }.ToList();
-            Configuration = _serviceProvider.GetService<IOptions<AppConfiguration>>().Value;
+            _appConfigurationOptions = _serviceProvider.GetService<IWritableOptions<AppConfiguration>>();
 
             _dialogHost = dialogHost;
             _dialogHost.Show(new OpenConnectionDialogViewModel(serviceProvider, ConnectAction), OpenOkAction, CancelAction);
         }
-
-        public AppConfiguration Configuration { get; private set; }
 
         public ICommand DisconnectCommand => _disconnectCommand ??= new RelayCommand(x => Disconnect());
 
@@ -85,7 +84,7 @@ namespace MqttListener.ViewModels
 
             mqttClient = new MqttClient(connectionItem.Host, port, false, null, null, MqttSslProtocols.None);
 
-            mqttClient.Connect(Configuration.ClientId, connectionItem.Username, connectionItem.Password);
+            mqttClient.Connect(_appConfigurationOptions.Value.ClientId, connectionItem.Username, connectionItem.Password);
             mqttClient.Subscribe(new string[] { connectionItem.Topic }, new byte[] { qos });
             mqttClient.MqttMsgPublishReceived += MqttClient_MqttMsgPublishReceived;
 
@@ -121,8 +120,6 @@ namespace MqttListener.ViewModels
                 }
 
                 Root = new[] { new TopicItem("Root") }.ToList();
-
-                Configuration = _serviceProvider.GetService<IOptions<AppConfiguration>>().Value;
 
                 _dialogHost.Show(new OpenConnectionDialogViewModel(_serviceProvider, ConnectAction), OpenOkAction, CancelAction);
             }
