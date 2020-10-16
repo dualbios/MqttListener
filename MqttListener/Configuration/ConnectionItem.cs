@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MqttListener.ViewModels;
+using Newtonsoft.Json;
 
 namespace MqttListener.Configuration
 {
@@ -17,8 +18,6 @@ namespace MqttListener.Configuration
 
         public ConnectionItem()
         {
-            SupportedProtocols = new[] { "mqtt://" };
-            SupportedQos = new[] { "0", "1", "2" };
         }
 
         public string ConnectionName
@@ -56,9 +55,6 @@ namespace MqttListener.Configuration
             get => _qos;
             set => SetProperty(ref _qos, value);
         }
-
-        public IEnumerable<string> SupportedProtocols { get; private set; }
-        public IEnumerable<string> SupportedQos { get; private set; }
 
         public List<string> Topics
         {

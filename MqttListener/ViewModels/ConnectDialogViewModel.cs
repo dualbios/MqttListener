@@ -61,7 +61,7 @@ namespace MqttListener.ViewModels
                     ErrorMessage = e.Message;
                 }
             }
-                , _cancellationTokenSource.Token);
+                , CancellationToken.None);
         }
 
         private void OnCancel()

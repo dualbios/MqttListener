@@ -4,34 +4,50 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:MqttListener.Views"
+             xmlns:converters="clr-namespace:MqttListener.Converters"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="600">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"></converters:NullToVisibilityConverter>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <DockPanel LastChildFill="True">
-        <StackPanel DockPanel.Dock="Top"
-                    Orientation="Horizontal">
+        <Border DockPanel.Dock="Top"
+                BorderBrush="#555"
+                BorderThickness="0 0 0 1">
             <TextBlock Text="{Binding Title}" 
+                       HorizontalAlignment="Stretch"
                        FontSize="24"
                        Margin="8 0"></TextBlock>
-        </StackPanel>
-        <StackPanel DockPanel.Dock="Bottom"
-                    Margin="8">
-            <Button Content="Disconnect"
-                    HorizontalAlignment="Right"
-                    Command="{Binding DisconnectCommand}"></Button>
-        </StackPanel>
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-            <TextBlock Text="Last topic:" Margin="4 0"></TextBlock>
-            <TextBlock Text="{Binding LastTopic}" Margin="4 0"></TextBlock>
-            <TextBlock Text=":" Margin="4 0"></TextBlock>
-            <TextBlock Text="{Binding LastMessage}" Margin="4 0"></TextBlock>
-        </StackPanel>
+        </Border>
+        <Border DockPanel.Dock="Bottom"
+                BorderThickness="0"
+                Background="#333">
+            <StackPanel Orientation="Vertical"
+                        Margin="8">
+                <TextBlock DockPanel.Dock="Bottom" 
+                           Margin="8 0">
+                    <Run Text="Last topic:"></Run>
+                    <Run Text="{Binding LastTopic, Mode=OneWay}"></Run>
+                    <Run Text=":"></Run>
+                    <Run Text="{Binding LastMessage, Mode=OneWay}"></Run>
+                </TextBlock>
+                <Button Content="Disconnect"
+                        HorizontalAlignment="Right"
+                        Command="{Binding DisconnectCommand}"></Button>
+            </StackPanel>
+        </Border>
         <TreeView ItemsSource="{Binding Root}">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Path=Child}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Name}" />
-                        <TextBlock Text=":" />
-                        <TextBlock Text="{Binding Message}" />
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{Binding Name, Mode=OneWay}"></TextBlock>
+                        <TextBlock Text="{Binding Message, Mode=OneWay}"
+                                   Visibility="{Binding Message, Converter={StaticResource NullToVisibilityConverter}}"
+                                   FontSize="12"
+                                   Foreground="#aaa"
+                                   VerticalAlignment="Center"></TextBlock>
                     </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>

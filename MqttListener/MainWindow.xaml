@@ -34,7 +34,9 @@
         <ContentControl Content="{Binding ServerViewModel}"
                         Visibility="{Binding DialogViewModel, Converter={StaticResource InversedNullToVisibilityConverter}}"></ContentControl>
         <Grid Visibility="{Binding DialogViewModel, Converter={StaticResource NullToVisibilityConverter}}"
-              Background="#bb000000">
+              Background="#bb000000"
+              MaxWidth="900"
+              MaxHeight="800">
             <Border Margin="32"
                     BorderThickness="1"
                     BorderBrush="Black">

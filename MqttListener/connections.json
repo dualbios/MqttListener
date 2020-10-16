@@ -2,21 +2,13 @@
   "ConnectionsList": {
     "Connections": [
       {
-        "ConnectionName": "212312",
-        "SupportedProtocols": [
-          "mqtt://"
-        ],
+        "ConnectionName": "192.168.0.1",
         "Protocol": "",
         "Host": "192.168.0.111",
         "Port": "1883",
         "Username": "mqtt",
         "TopicsList": "#;new_topic",
         "Qos": "",
-        "SupportedQos": [
-          "0",
-          "1",
-          "2"
-        ],
         "Password": "",
         "Topics": [
           "#",
@@ -25,20 +17,12 @@
       },
       {
         "ConnectionName": "test.mosquitto.org",
-        "SupportedProtocols": [
-          "mqtt://"
-        ],
         "Protocol": "",
         "Host": "test.mosquitto.org",
         "Port": "",
         "Username": "",
         "TopicsList": "",
         "Qos": "",
-        "SupportedQos": [
-          "0",
-          "1",
-          "2"
-        ],
         "Password": "",
         "Topics": null
       }

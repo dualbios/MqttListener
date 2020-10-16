@@ -28,7 +28,7 @@ namespace MqttListener.ViewModels
         private IList<TopicItem> _root;
         private string _rootTopicItemName;
         private string _title;
-        private IManagedMqttClient mqttClient;
+        private IManagedMqttClient _mqttClient = new MqttFactory().CreateManagedMqttClient();
 
         public ServerViewModel(IServiceProvider serviceProvider, IDialogHost dialogHost)
         {
@@ -80,7 +80,7 @@ namespace MqttListener.ViewModels
 
         private async Task ConnectAction(ConnectionItem connectionItem, CancellationToken token)
         {
-                TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
 
             try
             {
@@ -100,30 +100,39 @@ namespace MqttListener.ViewModels
                     .WithAutoReconnectDelay(TimeSpan.MaxValue)
                     .Build();
 
-                mqttClient = new MqttFactory().CreateManagedMqttClient();
                 MqttTopicFilter[] topicFilters = (connectionItem.Topics ?? Enumerable.Empty<string>())
                     .Select(x => new MqttTopicFilterBuilder().WithTopic(x).Build())
                     .ToArray();
 
-                mqttClient.UseConnectedHandler(x =>
+                _mqttClient.UseConnectedHandler(x =>
                 {
                     IsConnected = true;
                     Title = connectionItem.ConnectionName;
                     tcs.SetResult(true);
                 });
-                mqttClient.ConnectingFailedHandler = new ConnectingFailedHandlerDelegate(x =>
+                _mqttClient.ConnectingFailedHandler = new ConnectingFailedHandlerDelegate(x =>
                 {
                     IsConnected = false;
-                    mqttClient.StopAsync();
+                    _mqttClient.StopAsync();
+
                     tcs.SetException(new Exception("Can not instantiate connection.", x.Exception));
                 });
 
-                await mqttClient.SubscribeAsync(topicFilters);
-                await mqttClient.StartAsync(options);
+                await _mqttClient.SubscribeAsync(topicFilters);
+                await _mqttClient.StartAsync(options);
 
-                mqttClient.UseApplicationMessageReceivedHandler(MqttClientReceived);
+                _mqttClient.UseApplicationMessageReceivedHandler(MqttClientReceived);
 
                 await Task.Delay(300);
+
+                if (token.IsCancellationRequested)
+                {
+                    Disconnect();
+                    if (!tcs.Task.IsCompleted)
+                    {
+                        tcs.SetCanceled();
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -135,18 +144,18 @@ namespace MqttListener.ViewModels
 
         private void Disconnect()
         {
-            if (mqttClient != null)
+            if (_mqttClient != null)
             {
                 try
                 {
-                    mqttClient.StopAsync();
+                    _mqttClient?.StopAsync();
                 }
                 catch
                 {
                 }
                 finally
                 {
-                    mqttClient = null;
+                    //mqttClient = null;
                     IsConnected = false;
                     LastTopic = null;
                     LastMessage = null;

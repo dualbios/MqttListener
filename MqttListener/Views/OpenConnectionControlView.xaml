@@ -7,13 +7,30 @@
              xmlns:local="clr-namespace:MqttListener.Views"
              xmlns:views ="clr-namespace:MqttListener.Views"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="1000">
+             d:DesignHeight="585" d:DesignWidth="967">
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></converters:BoolToVisibilityConverter>
             <converters:BoolToVisibilityConverter IsInverted="True" x:Key="InvertedBoolToVisibilityConverter"></converters:BoolToVisibilityConverter>
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"></converters:NullToVisibilityConverter>
             <converters:NullToVisibilityConverter IsInversed="True" x:Key="InvertedNullToVisibilityConverter"></converters:NullToVisibilityConverter>
+
+            <Style TargetType="HeaderedContentControl">
+                <Setter Property="Margin" Value="04 0"></Setter>
+                <Setter Property="HeaderTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <Border BorderThickness="0 0 0 1"
+                                    BorderBrush="#555"
+                                    Margin="0 4">
+                                <TextBlock Text="{Binding}"
+                                           Foreground="#aaa"
+                                           FontSize="14"></TextBlock>
+                            </Border>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel LastChildFill="True"
@@ -32,44 +49,45 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Vertical">
-                            <TextBlock Text="{Binding ConnectionName}"></TextBlock>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Protocol}"></TextBlock>
-                                <TextBlock Text="{Binding Host}"></TextBlock>
-                                <TextBlock Text="{Binding Port}"></TextBlock>
-                            </StackPanel>
+                            <TextBlock FontSize="16"
+                                       Text="{Binding ConnectionName}"></TextBlock>
+                            <TextBlock FontSize="12">
+                                <Run Text="{Binding Host}"></Run>
+                                <Run Text=":"></Run>
+                                <Run Text="{Binding Port}"></Run>
+                            </TextBlock>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <Expander Header="Advansed"
-                      DockPanel.Dock="Bottom"
-                      IsExpanded="False">
-                <Grid Margin="4">
-                    <HeaderedContentControl Header="Client id"
-                                            HorizontalAlignment="Stretch">
-                        <TextBox Text="{Binding ClientId}"></TextBox>
-                    </HeaderedContentControl>
-                </Grid>
-            </Expander>
+            <Border DockPanel.Dock="Bottom" 
+                    BorderThickness="1"
+                    Margin="4 4 4 0"
+                    Background="#222"
+                    BorderBrush="#555">
+                <Expander Header="Client Advansed"
+                          Margin="8"
+                          IsExpanded="False">
+                    <Grid Margin="4">
+                        <HeaderedContentControl Header="Client id"
+                                                HorizontalAlignment="Stretch">
+                            <TextBox Text="{Binding ClientId}"></TextBox>
+                        </HeaderedContentControl>
+                    </Grid>
+                </Expander>
+            </Border>
             <ScrollViewer>
-                <!--<views:ConnectionItemView DataContext="{Binding SelectedItem, ElementName=ConnectionList, Mode=OneWay}"></views:ConnectionItemView>-->
                 <StackPanel Orientation="Vertical"
+                            Margin="4 0"
                             DataContext="{Binding SelectedItem, ElementName=ConnectionList}">
                     <StackPanel.Resources>
-                        <Style TargetType="HeaderedContentControl">
-                            <Setter Property="Margin" Value="04 0"></Setter>
-                        </Style>
-                    </StackPanel.Resources>
+                        
+                        </StackPanel.Resources>
                     <GroupBox Header="Connection">
                         <TextBox Text="{Binding ConnectionName}" Margin="4 2"></TextBox>
                     </GroupBox>
                     <GroupBox Header="Host">
                         <StackPanel Orientation="Horizontal">
-                            <HeaderedContentControl Header="Protocol">
-                                <ComboBox ItemsSource="{Binding SupportedProtocols}"
-                              SelectedItem="{Binding Protocol}" VerticalAlignment="Center" Width="166"></ComboBox>
-                            </HeaderedContentControl>
                             <HeaderedContentControl Header="Host">
                                 <TextBox Text="{Binding Host}" Width="373"></TextBox>
                             </HeaderedContentControl>
@@ -92,15 +110,17 @@
                         <StackPanel Orientation="Horizontal">
                             <HeaderedContentControl Header="Topic">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding TopicsList}" Width="229"></TextBlock>
+                                    <TextBox IsReadOnly="True" Text="{Binding TopicsList, Mode=OneWay}" Width="229"></TextBox>
                                     <Button Content="Edit" 
                                             Command="{Binding DataContext.TopicsEditCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                             Margin="4 0"></Button>
                                 </StackPanel>
                             </HeaderedContentControl>
                             <HeaderedContentControl Header="Qos">
-                                <ComboBox SelectedItem="{Binding Qos}"
-                              ItemsSource="{Binding SupportedQos}">
+                                <ComboBox SelectedValue="{Binding Qos, Mode=TwoWay}" SelectedValuePath="Tag">
+                                    <ComboBoxItem Content="0" Tag="0"></ComboBoxItem>
+                                    <ComboBoxItem Content="1" Tag="1"></ComboBoxItem>
+                                    <ComboBoxItem Content="2" Tag="2"></ComboBoxItem>
                                 </ComboBox>
                             </HeaderedContentControl>
                         </StackPanel>
