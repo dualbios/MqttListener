@@ -80,6 +80,8 @@ namespace MqttListener.ViewModels
 
         private async Task ConnectAction(ConnectionItem connectionItem, CancellationToken token)
         {
+                TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+
             try
             {
                 if (!int.TryParse(connectionItem.Port, out int port))
@@ -95,25 +97,40 @@ namespace MqttListener.ViewModels
                         .WithTcpServer(connectionItem.Host, port)
                         .WithCredentials(connectionItem.Username, /*connectionItem.Password*/"mqtt")
                         .Build())
+                    .WithAutoReconnectDelay(TimeSpan.MaxValue)
                     .Build();
 
                 mqttClient = new MqttFactory().CreateManagedMqttClient();
                 MqttTopicFilter[] topicFilters = (connectionItem.Topics ?? Enumerable.Empty<string>())
                     .Select(x => new MqttTopicFilterBuilder().WithTopic(x).Build())
                     .ToArray();
+
+                mqttClient.UseConnectedHandler(x =>
+                {
+                    IsConnected = true;
+                    Title = connectionItem.ConnectionName;
+                    tcs.SetResult(true);
+                });
+                mqttClient.ConnectingFailedHandler = new ConnectingFailedHandlerDelegate(x =>
+                {
+                    IsConnected = false;
+                    mqttClient.StopAsync();
+                    tcs.SetException(new Exception("Can not instantiate connection.", x.Exception));
+                });
+
                 await mqttClient.SubscribeAsync(topicFilters);
                 await mqttClient.StartAsync(options);
 
                 mqttClient.UseApplicationMessageReceivedHandler(MqttClientReceived);
 
-                IsConnected = true;
-
-                Title = connectionItem.ConnectionName;
+                await Task.Delay(300);
             }
             catch (Exception e)
             {
-                throw new Exception("Can not instantiate connection.", e);
+                tcs.SetException(new Exception("Can not instantiate connection.", e));
             }
+
+            await tcs.Task;
         }
 
         private void Disconnect()
