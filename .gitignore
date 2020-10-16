@@ -1,3 +1,6 @@
 .vs/
 MqttListener/bin/
 MqttListener/obj/
+*.sln.DotSettings
+*.sln.DotSettings.user
+
