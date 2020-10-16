@@ -18,7 +18,9 @@ namespace MqttListener.ViewModels
 {
     public class ServerViewModel : BaseViewModel
     {
+        private const string _rootTopicItemName = "Root";
         private readonly IDialogHost _dialogHost = null;
+        private readonly IManagedMqttClient _mqttClient = new MqttFactory().CreateManagedMqttClient();
         private readonly IServiceProvider _serviceProvider;
         private IWritableOptions<AppConfiguration> _appConfigurationOptions;
         private RelayCommand _disconnectCommand;
@@ -26,15 +28,13 @@ namespace MqttListener.ViewModels
         private string _lastMessage;
         private string _lastTopic;
         private IList<TopicItem> _root;
-        private string _rootTopicItemName;
+        private TopicItem _selectedTopicItem;
         private string _title;
-        private IManagedMqttClient _mqttClient = new MqttFactory().CreateManagedMqttClient();
 
         public ServerViewModel(IServiceProvider serviceProvider, IDialogHost dialogHost)
         {
             _serviceProvider = serviceProvider;
 
-            _rootTopicItemName = "Root";
             Root = new[] { new TopicItem(_rootTopicItemName) }.ToList();
             _appConfigurationOptions = _serviceProvider.GetService<IWritableOptions<AppConfiguration>>();
 
@@ -66,6 +66,12 @@ namespace MqttListener.ViewModels
         {
             get => _root;
             private set => SetProperty(ref _root, value);
+        }
+
+        public TopicItem SelectedTopicItem
+        {
+            get => _selectedTopicItem;
+            set => SetProperty(ref _selectedTopicItem, value);
         }
 
         public string Title
@@ -108,14 +114,19 @@ namespace MqttListener.ViewModels
                 {
                     IsConnected = true;
                     Title = connectionItem.ConnectionName;
-                    tcs.SetResult(true);
+                    if (!tcs.Task.IsCompleted)
+                    {
+                        tcs.SetResult(true);
+                    }
                 });
                 _mqttClient.ConnectingFailedHandler = new ConnectingFailedHandlerDelegate(x =>
                 {
                     IsConnected = false;
                     _mqttClient.StopAsync();
-
-                    tcs.SetException(new Exception("Can not instantiate connection.", x.Exception));
+                    if (!tcs.Task.IsCompleted)
+                    {
+                        tcs.SetException(new Exception("Can not instantiate connection.", x.Exception));
+                    }
                 });
 
                 await _mqttClient.SubscribeAsync(topicFilters);

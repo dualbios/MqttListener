@@ -22,5 +22,10 @@ namespace MqttListener.Views
         {
             InitializeComponent();
         }
+
+        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            SelectedItemHelper.Content = e.NewValue;
+        }
     }
 }

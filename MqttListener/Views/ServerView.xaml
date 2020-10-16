@@ -16,7 +16,7 @@
         <Border DockPanel.Dock="Top"
                 BorderBrush="#555"
                 BorderThickness="0 0 0 1">
-            <TextBlock Text="{Binding Title}" 
+            <TextBlock Text="{Binding Title}"
                        HorizontalAlignment="Stretch"
                        FontSize="24"
                        Margin="8 0"></TextBlock>
@@ -26,7 +26,7 @@
                 Background="#333">
             <StackPanel Orientation="Vertical"
                         Margin="8">
-                <TextBlock DockPanel.Dock="Bottom" 
+                <TextBlock DockPanel.Dock="Bottom"
                            Margin="8 0">
                     <Run Text="Last topic:"></Run>
                     <Run Text="{Binding LastTopic, Mode=OneWay}"></Run>
@@ -38,19 +38,62 @@
                         Command="{Binding DisconnectCommand}"></Button>
             </StackPanel>
         </Border>
-        <TreeView ItemsSource="{Binding Root}">
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Path=Child}">
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock Text="{Binding Name, Mode=OneWay}"></TextBlock>
-                        <TextBlock Text="{Binding Message, Mode=OneWay}"
-                                   Visibility="{Binding Message, Converter={StaticResource NullToVisibilityConverter}}"
-                                   FontSize="12"
-                                   Foreground="#aaa"
-                                   VerticalAlignment="Center"></TextBlock>
-                    </StackPanel>
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-        </TreeView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4*"></ColumnDefinition>
+                <ColumnDefinition Width="2"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <GridSplitter Grid.Column="1" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"></GridSplitter>
+            <Grid Grid.Column="2" 
+                  Background="#222">
+                <Grid.Resources>
+                    <Style TargetType="HeaderedContentControl">
+                        <Setter Property="Margin" Value="04 0"></Setter>
+                        <Setter Property="HeaderTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <Border BorderThickness="0 0 0 1"
+                                            BorderBrush="#555"
+                                            Margin="0 4">
+                                        <TextBlock Text="{Binding}"
+                                                   Foreground="#aaa"
+                                                   FontSize="14"></TextBlock>
+                                    </Border>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Grid.Resources>
+                <StackPanel Orientation="Vertical"
+                            Margin="8"
+                            DataContext="{Binding SelectedTopicItem}">
+                    <HeaderedContentControl Header="Name">
+                        <TextBlock Text="{Binding Name}"></TextBlock>
+                    </HeaderedContentControl>
+                    <HeaderedContentControl Header="Message">
+                        <TextBlock Text="{Binding Message}" TextWrapping="Wrap"></TextBlock>
+                    </HeaderedContentControl>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Column="0">
+                <ContentControl x:Name="SelectedItemHelper" Content="{Binding SelectedTopicItem, Mode=OneWayToSource}" Visibility="Collapsed" />
+                <TreeView ItemsSource="{Binding Root}"
+                          SelectedItemChanged="TreeView_SelectedItemChanged">
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding Path=Child}">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="{Binding Name, Mode=OneWay}"></TextBlock>
+                                <TextBlock Text="{Binding Message, Mode=OneWay}"
+                                       Visibility="{Binding Message, Converter={StaticResource NullToVisibilityConverter}}"
+                                       FontSize="12"
+                                       Foreground="#aaa"
+                                       VerticalAlignment="Center"></TextBlock>
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+            </Grid>
+        </Grid>
     </DockPanel>
 </UserControl>
