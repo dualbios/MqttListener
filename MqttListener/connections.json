@@ -3,19 +3,48 @@
     "Connections": [
       {
         "ConnectionName": "212312",
+        "SupportedProtocols": [
+          "mqtt://"
+        ],
+        "Protocol": "",
         "Host": "192.168.0.111",
         "Port": "1883",
-        "Topic": "#"
+        "Username": "mqtt",
+        "TopicsList": "#;new_topic",
+        "Qos": "",
+        "SupportedQos": [
+          "0",
+          "1",
+          "2"
+        ],
+        "Password": "",
+        "Topics": [
+          "#",
+          "new_topic"
+        ]
       },
       {
         "ConnectionName": "test.mosquitto.org",
+        "SupportedProtocols": [
+          "mqtt://"
+        ],
+        "Protocol": "",
         "Host": "test.mosquitto.org",
         "Port": "",
-        "Topic": "#"
+        "Username": "",
+        "TopicsList": "",
+        "Qos": "",
+        "SupportedQos": [
+          "0",
+          "1",
+          "2"
+        ],
+        "Password": "",
+        "Topics": null
       }
     ]
   },
   "AppConfiguration": {
-     "ClientId": "MqttListener"
+    "ClientId": "MqttListener"
   }
 }

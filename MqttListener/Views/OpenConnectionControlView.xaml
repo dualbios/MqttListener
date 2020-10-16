@@ -53,7 +53,61 @@
                 </Grid>
             </Expander>
             <ScrollViewer>
-                <views:ConnectionItemView DataContext="{Binding SelectedItem, ElementName=ConnectionList, Mode=OneWay}"></views:ConnectionItemView>
+                <!--<views:ConnectionItemView DataContext="{Binding SelectedItem, ElementName=ConnectionList, Mode=OneWay}"></views:ConnectionItemView>-->
+                <StackPanel Orientation="Vertical"
+                            DataContext="{Binding SelectedItem, ElementName=ConnectionList}">
+                    <StackPanel.Resources>
+                        <Style TargetType="HeaderedContentControl">
+                            <Setter Property="Margin" Value="04 0"></Setter>
+                        </Style>
+                    </StackPanel.Resources>
+                    <GroupBox Header="Connection">
+                        <TextBox Text="{Binding ConnectionName}" Margin="4 2"></TextBox>
+                    </GroupBox>
+                    <GroupBox Header="Host">
+                        <StackPanel Orientation="Horizontal">
+                            <HeaderedContentControl Header="Protocol">
+                                <ComboBox ItemsSource="{Binding SupportedProtocols}"
+                              SelectedItem="{Binding Protocol}" VerticalAlignment="Center" Width="166"></ComboBox>
+                            </HeaderedContentControl>
+                            <HeaderedContentControl Header="Host">
+                                <TextBox Text="{Binding Host}" Width="373"></TextBox>
+                            </HeaderedContentControl>
+                            <HeaderedContentControl Header="Port">
+                                <TextBox Text="{Binding Port}" Width="104"></TextBox>
+                            </HeaderedContentControl>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="Sequrity">
+                        <StackPanel Orientation="Horizontal">
+                            <HeaderedContentControl Header="Username">
+                                <TextBox Text="{Binding Username}" Width="165"></TextBox>
+                            </HeaderedContentControl>
+                            <HeaderedContentControl Header="Password">
+                                <PasswordBox x:Name="PasswordBox" Width="165"></PasswordBox>
+                            </HeaderedContentControl>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="Advanced">
+                        <StackPanel Orientation="Horizontal">
+                            <HeaderedContentControl Header="Topic">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding TopicsList}" Width="229"></TextBlock>
+                                    <Button Content="Edit" 
+                                            Command="{Binding DataContext.TopicsEditCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            Margin="4 0"></Button>
+                                </StackPanel>
+                            </HeaderedContentControl>
+                            <HeaderedContentControl Header="Qos">
+                                <ComboBox SelectedItem="{Binding Qos}"
+                              ItemsSource="{Binding SupportedQos}">
+                                </ComboBox>
+                            </HeaderedContentControl>
+                        </StackPanel>
+                    </GroupBox>
+
+                </StackPanel>
+
             </ScrollViewer>
         </DockPanel>
     </DockPanel>

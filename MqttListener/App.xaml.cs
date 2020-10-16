@@ -34,6 +34,5 @@ namespace MqttListener
             var view = new MainWindow() { DataContext = context };
             view.Show();
         }
-
     }
 }

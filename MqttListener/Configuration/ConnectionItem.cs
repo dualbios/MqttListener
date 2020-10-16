@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using MqttListener.ViewModels;
 
 namespace MqttListener.Configuration
@@ -12,17 +12,14 @@ namespace MqttListener.Configuration
         private string _port;
         private string _protocol;
         private string _qos;
-        private string _topic;
+        private List<string> _topic;
         private string _username;
 
         public ConnectionItem()
         {
-            SupportedProtocols = new[] {"mqtt://"};
-            SupportedQos = new[] {"0", "1", "2"};
+            SupportedProtocols = new[] { "mqtt://" };
+            SupportedQos = new[] { "0", "1", "2" };
         }
-
-        public IEnumerable<string> SupportedProtocols { get; private set; }
-        public IEnumerable<string> SupportedQos { get; private set; }
 
         public string ConnectionName
         {
@@ -60,10 +57,22 @@ namespace MqttListener.Configuration
             set => SetProperty(ref _qos, value);
         }
 
-        public string Topic
+        public IEnumerable<string> SupportedProtocols { get; private set; }
+        public IEnumerable<string> SupportedQos { get; private set; }
+
+        public List<string> Topics
         {
             get => _topic;
-            set => SetProperty(ref _topic, value);
+            set
+            {
+                SetProperty(ref _topic, value);
+                OnPropertyChanged(nameof(TopicsList));
+            }
+        }
+
+        public string TopicsList
+        {
+            get { return string.Join(";", Topics ?? Enumerable.Empty<string>()); }
         }
 
         public string Username

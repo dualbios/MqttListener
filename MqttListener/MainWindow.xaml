@@ -22,6 +22,10 @@
             <DataTemplate DataType="{x:Type viewModels:ConnectDialogViewModel}">
                 <views:ConnectDialogView></views:ConnectDialogView>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:TopicsViewModel}">
+                <views:TopicsView></views:TopicsView>
+            </DataTemplate>
+
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"></converters:NullToVisibilityConverter>
             <converters:NullToVisibilityConverter IsInversed="True" x:Key="InversedNullToVisibilityConverter"></converters:NullToVisibilityConverter>
         </ResourceDictionary>

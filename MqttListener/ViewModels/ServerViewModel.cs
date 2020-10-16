@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using MqttListener.Configuration;
+using MqttListener.Core;
 using MqttListener.Interfaces;
-using uPLibrary.Networking.M2Mqtt;
+using MQTTnet;
+using MQTTnet.Client.Options;
+using MQTTnet.Extensions.ManagedClient;
 
 namespace MqttListener.ViewModels
 {
@@ -17,20 +20,22 @@ namespace MqttListener.ViewModels
     {
         private readonly IDialogHost _dialogHost = null;
         private readonly IServiceProvider _serviceProvider;
+        private IWritableOptions<AppConfiguration> _appConfigurationOptions;
         private RelayCommand _disconnectCommand;
         private bool _isConnected;
         private string _lastMessage;
         private string _lastTopic;
         private IList<TopicItem> _root;
+        private string _rootTopicItemName;
         private string _title;
-        private MqttClient mqttClient;
-        private IWritableOptions<AppConfiguration> _appConfigurationOptions;
+        private IManagedMqttClient mqttClient;
 
         public ServerViewModel(IServiceProvider serviceProvider, IDialogHost dialogHost)
         {
             _serviceProvider = serviceProvider;
 
-            Root = new[] { new TopicItem("Root") }.ToList();
+            _rootTopicItemName = "Root";
+            Root = new[] { new TopicItem(_rootTopicItemName) }.ToList();
             _appConfigurationOptions = _serviceProvider.GetService<IWritableOptions<AppConfiguration>>();
 
             _dialogHost = dialogHost;
@@ -73,42 +78,51 @@ namespace MqttListener.ViewModels
         {
         }
 
-        private void ConnectAction(ConnectionItem connectionItem, CancellationToken token)
+        private async Task ConnectAction(ConnectionItem connectionItem, CancellationToken token)
         {
-            if (!int.TryParse(connectionItem.Port, out int port))
+            try
             {
-                port = 1883;
+                if (!int.TryParse(connectionItem.Port, out int port))
+                {
+                    port = 1883;
+                }
+
+                byte.TryParse(connectionItem.Qos, out byte qos);
+
+                var options = new ManagedMqttClientOptionsBuilder()
+                    .WithClientOptions(new MqttClientOptionsBuilder()
+                        .WithClientId(_appConfigurationOptions.Value.ClientId)
+                        .WithTcpServer(connectionItem.Host, port)
+                        .WithCredentials(connectionItem.Username, /*connectionItem.Password*/"mqtt")
+                        .Build())
+                    .Build();
+
+                mqttClient = new MqttFactory().CreateManagedMqttClient();
+                MqttTopicFilter[] topicFilters = (connectionItem.Topics ?? Enumerable.Empty<string>())
+                    .Select(x => new MqttTopicFilterBuilder().WithTopic(x).Build())
+                    .ToArray();
+                await mqttClient.SubscribeAsync(topicFilters);
+                await mqttClient.StartAsync(options);
+
+                mqttClient.UseApplicationMessageReceivedHandler(MqttClientReceived);
+
+                IsConnected = true;
+
+                Title = connectionItem.ConnectionName;
             }
-
-            byte.TryParse(connectionItem.Qos, out byte qos);
-
-            mqttClient = new MqttClient(connectionItem.Host, port, false, null, null, MqttSslProtocols.None);
-
-            mqttClient.Connect(_appConfigurationOptions.Value.ClientId, connectionItem.Username, connectionItem.Password);
-            mqttClient.Subscribe(new string[] { connectionItem.Topic }, new byte[] { qos });
-            mqttClient.MqttMsgPublishReceived += MqttClient_MqttMsgPublishReceived;
-
-            IsConnected = mqttClient.IsConnected;
-
-            if (!IsConnected)
+            catch (Exception e)
             {
-                mqttClient.MqttMsgPublishReceived -= MqttClient_MqttMsgPublishReceived;
-                mqttClient = null;
-
-                throw new Exception("Can not instantiate connection.");
+                throw new Exception("Can not instantiate connection.", e);
             }
-
-            Title = connectionItem.ConnectionName;
         }
 
         private void Disconnect()
         {
-           if (mqttClient != null)
+            if (mqttClient != null)
             {
                 try
                 {
-                    mqttClient.Disconnect();
-                    mqttClient.MqttMsgPublishReceived -= MqttClient_MqttMsgPublishReceived;
+                    mqttClient.StopAsync();
                 }
                 catch
                 {
@@ -117,9 +131,11 @@ namespace MqttListener.ViewModels
                 {
                     mqttClient = null;
                     IsConnected = false;
+                    LastTopic = null;
+                    LastMessage = null;
                 }
 
-                Root = new[] { new TopicItem("Root") }.ToList();
+                Root = new[] { new TopicItem(_rootTopicItemName) }.ToList();
 
                 _dialogHost.Show(new OpenConnectionDialogViewModel(_serviceProvider, ConnectAction), OpenOkAction, CancelAction);
             }
@@ -144,13 +160,13 @@ namespace MqttListener.ViewModels
             }
         }
 
-        private void MqttClient_MqttMsgPublishReceived(object sender, uPLibrary.Networking.M2Mqtt.Messages.MqttMsgPublishEventArgs e)
+        private void MqttClientReceived(MqttApplicationMessageReceivedEventArgs arg)
         {
-            string message = Encoding.UTF8.GetString(e.Message);
-            TopicItem topicItem = ParseTopic(e.Topic, message);
+            string message = Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
+            TopicItem topicItem = ParseTopic(arg.ApplicationMessage.Topic, message);
             InsertTopic(topicItem, Root[0]);
 
-            LastTopic = e.Topic;
+            LastTopic = arg.ApplicationMessage.Topic;
             LastMessage = message;
         }
 

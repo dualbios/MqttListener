@@ -10,7 +10,7 @@ namespace MqttListener.ViewModels
     public class ConnectDialogViewModel : BaseViewModel, IDialog
     {
         private readonly ConnectionItem _selectedItem;
-        private readonly Action<ConnectionItem, CancellationToken> _connectAction;
+        private readonly Func<ConnectionItem, CancellationToken, Task> _connectAction;
         private ICommand _cancelCommand;
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private IDialogHost _dialogHost = null;
@@ -18,7 +18,7 @@ namespace MqttListener.ViewModels
 
         private bool _isConnecting;
 
-        public ConnectDialogViewModel(ConnectionItem selectedItem, Action<ConnectionItem, CancellationToken> connectAction)
+        public ConnectDialogViewModel(ConnectionItem selectedItem, Func<ConnectionItem, CancellationToken, Task> connectAction)
         {
             _selectedItem = selectedItem;
             _connectAction = connectAction;
@@ -41,14 +41,14 @@ namespace MqttListener.ViewModels
         public void OnOpen(IDialogHost dialogHost)
         {
             _dialogHost = dialogHost;
-            Task.Run(() =>
+            Task.Run(async () =>
             {
                 IsConnecting = true;
                 ErrorMessage = null;
 
                 try
                 {
-                    _connectAction?.Invoke(_selectedItem, _cancellationTokenSource.Token);
+                    await _connectAction?.Invoke(_selectedItem, _cancellationTokenSource.Token);
 
                     if (_cancellationTokenSource.IsCancellationRequested)
                         return;

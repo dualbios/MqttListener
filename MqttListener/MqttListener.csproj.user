@@ -16,6 +16,9 @@
     <Compile Update="Views\ServerView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\TopicsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="MainWindow.xaml">
@@ -28,6 +31,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\ServerView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\TopicsView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

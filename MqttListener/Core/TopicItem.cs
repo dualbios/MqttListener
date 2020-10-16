@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using MqttListener.ViewModels;
 
-namespace MqttListener
+namespace MqttListener.Core
 {
     public class TopicItem : BaseViewModel
     {
