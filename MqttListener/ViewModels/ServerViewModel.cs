@@ -166,7 +166,6 @@ namespace MqttListener.ViewModels
                 }
                 finally
                 {
-                    //mqttClient = null;
                     IsConnected = false;
                     LastTopic = null;
                     LastMessage = null;
@@ -199,7 +198,7 @@ namespace MqttListener.ViewModels
 
         private void MqttClientReceived(MqttApplicationMessageReceivedEventArgs arg)
         {
-            string message = Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
+            string message = arg.ApplicationMessage.Payload==null? null: Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
             TopicItem topicItem = ParseTopic(arg.ApplicationMessage.Topic, message);
             InsertTopic(topicItem, Root[0]);
 

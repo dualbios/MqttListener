@@ -4,3 +4,5 @@ MqttListener/obj/
 *.sln.DotSettings
 *.sln.DotSettings.user
 
+PostToMqtt/obj/
+PostToMqtt/bin/

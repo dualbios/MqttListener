@@ -10,6 +10,9 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"></converters:NullToVisibilityConverter>
+            <converters:NullToVisibilityConverter IsInversed="True" x:Key="InvertedNullToVisibilityConverter"></converters:NullToVisibilityConverter>
+            <converters:CollectionCountToVisibilityConverter Count="1" Kind="Great" x:Key="CollectionCountToVisibilityConverter"></converters:CollectionCountToVisibilityConverter>
+            <converters:CollectionCountToVisibilityConverter Count="0" Kind="Equal" x:Key="Zero-CollectionCountToVisibilityConverter"></converters:CollectionCountToVisibilityConverter>
         </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
@@ -40,14 +43,17 @@
         </Border>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="4*"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
                 <ColumnDefinition Width="2"></ColumnDefinition>
                 <ColumnDefinition Width="1*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <GridSplitter Grid.Column="1" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"></GridSplitter>
-            <Grid Grid.Column="2" 
-                  Background="#222">
-                <Grid.Resources>
+            <DockPanel Grid.Column="2" 
+                       LastChildFill="True"
+                       Background="#222"
+                       Margin="8"
+                       DataContext="{Binding SelectedTopicItem}">
+                <DockPanel.Resources>
                     <Style TargetType="HeaderedContentControl">
                         <Setter Property="Margin" Value="04 0"></Setter>
                         <Setter Property="HeaderTemplate">
@@ -64,18 +70,31 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-                </Grid.Resources>
-                <StackPanel Orientation="Vertical"
-                            Margin="8"
-                            DataContext="{Binding SelectedTopicItem}">
-                    <HeaderedContentControl Header="Name">
+                </DockPanel.Resources>
+                    <HeaderedContentControl Header="Name"
+                                            DockPanel.Dock="Top">
                         <TextBlock Text="{Binding Name}"></TextBlock>
                     </HeaderedContentControl>
-                    <HeaderedContentControl Header="Message">
-                        <TextBlock Text="{Binding Message}" TextWrapping="Wrap"></TextBlock>
+                    <HeaderedContentControl Header="History"
+                                            DockPanel.Dock="Bottom"
+                                            MaxHeight="150"
+                                            Visibility="{Binding MessageHistory, Converter={StaticResource CollectionCountToVisibilityConverter}}">
+                        <ListBox ItemsSource="{Binding MessageHistory}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <DockPanel LastChildFill="True">
+                                        <TextBlock Text="{Binding DateTime}" DockPanel.Dock="Left"></TextBlock>
+                                        <TextBlock Text="{Binding Message}"></TextBlock>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </HeaderedContentControl>
-                </StackPanel>
-            </Grid>
+                <HeaderedContentControl Header="Message"
+                                        Visibility="{Binding Child, Converter={StaticResource Zero-CollectionCountToVisibilityConverter}}">
+                    <TextBlock Text="{Binding Message}" TextWrapping="Wrap"></TextBlock>
+                </HeaderedContentControl>
+            </DockPanel>
             <Grid Grid.Column="0">
                 <ContentControl x:Name="SelectedItemHelper" Content="{Binding SelectedTopicItem, Mode=OneWayToSource}" Visibility="Collapsed" />
                 <TreeView ItemsSource="{Binding Root}"
@@ -83,7 +102,21 @@
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding Path=Child}">
                             <StackPanel Orientation="Vertical">
-                                <TextBlock Text="{Binding Name, Mode=OneWay}"></TextBlock>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Name, Mode=OneWay}"></TextBlock>
+                                    <TextBlock Visibility="{Binding Message, Converter={StaticResource InvertedNullToVisibilityConverter}}"
+                                               VerticalAlignment="Bottom"
+                                               Margin="4 0"
+                                               Foreground="#999"
+                                               FontSize="10">
+                                        <Run Text="Child : "></Run>
+                                        <Run Text="{Binding ChildCount, Mode=OneWay}"></Run>
+                                        <Run Text="Topics : "></Run>
+                                        <Run Text="{Binding TopicCount, Mode=OneWay}"></Run>
+                                        <Run Text="Messages : "></Run>
+                                        <Run Text="{Binding MessageCount, Mode=OneWay}"></Run>
+                                    </TextBlock>
+                                </StackPanel>
                                 <TextBlock Text="{Binding Message, Mode=OneWay}"
                                        Visibility="{Binding Message, Converter={StaticResource NullToVisibilityConverter}}"
                                        FontSize="12"
