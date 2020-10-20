@@ -4,15 +4,22 @@ using System.Threading.Tasks;
 using MQTTnet;
 using MQTTnet.Client.Options;
 using MQTTnet.Client.Publishing;
+using MQTTnet.Diagnostics;
 using MQTTnet.Extensions.ManagedClient;
 
 namespace PostToMqtt
 {
     internal class Program
     {
-        public static async Task Run(string topic, string message)
+        private static void Logger_LogMessagePublished(object sender, MqttNetLogMessagePublishedEventArgs e)
         {
-            IManagedMqttClient _mqttClient = new MqttFactory().CreateManagedMqttClient();
+        }
+
+        private static async Task<IManagedMqttClient> ConnectClientAsync()
+        {
+            IMqttNetLogger logger = new MqttNetLogger("sss");
+            logger.LogMessagePublished += Logger_LogMessagePublished;
+            IManagedMqttClient _mqttClient = new MqttFactory().CreateManagedMqttClient(logger);
 
             var options = new ManagedMqttClientOptionsBuilder()
                 .WithClientOptions(new MqttClientOptionsBuilder()
@@ -23,14 +30,31 @@ namespace PostToMqtt
                 .WithAutoReconnectDelay(TimeSpan.MaxValue)
                 .Build();
 
-            await _mqttClient.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic("#").Build());
             await _mqttClient.StartAsync(options);
-            MqttClientPublishResult result = await _mqttClient.PublishAsync(new MqttApplicationMessage() { Topic = topic, Payload = Encoding.UTF8.GetBytes(message) });
+
+            await Task.Delay(3000);
+
+            return _mqttClient;
         }
 
         private static void Main(string[] args)
         {
-            Run("\\test\\test", "value-1").GetAwaiter().GetResult();
+            IManagedMqttClient client = ConnectClientAsync().GetAwaiter().GetResult();
+            string mess = "String.Empty";
+
+            while (!string.IsNullOrEmpty(mess = Console.ReadLine()))
+            {
+                int index = mess.IndexOf(' ');
+                string[] strings = new string[2]{ mess.Substring(0, index), mess.Substring(index) } ;
+                MqttClientPublishResult result = client.PublishAsync(
+                    new MqttApplicationMessageBuilder()
+                        .WithTopic(strings[0])
+                        .WithPayload(strings[1])
+                        .WithAtLeastOnceQoS()
+                        .Build())
+                    .GetAwaiter()
+                    .GetResult();
+            }
         }
     }
 }
