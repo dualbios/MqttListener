@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using MqttListener.ViewModels;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace MqttListener.Core
 {
@@ -36,6 +39,8 @@ namespace MqttListener.Core
             {
                 if (SetProperty(ref _message, value))
                 {
+                    
+
                     var historyItem = new TopicMessageHistoryItem(DateTime.Now, _message);
 
                     if (Application.Current.Dispatcher.CheckAccess())
@@ -46,6 +51,11 @@ namespace MqttListener.Core
                     {
                         Application.Current.Dispatcher.Invoke(() => _messageHistory.Add(historyItem));
                     }
+
+                    OnPropertyChanged(nameof(MessageCount));
+                    OnPropertyChanged(nameof(OldMessage));
+                    OnPropertyChanged(nameof(MessageIndented));
+                    OnPropertyChanged(nameof(Child));
                 }
             }
         }
@@ -69,6 +79,35 @@ namespace MqttListener.Core
         public int TopicCount
         {
             get => _child.Count(x => string.IsNullOrEmpty(x.Message));
+        }
+
+        public string OldMessage
+        {
+            get
+            {
+                if (_messageHistory.Count < 2)
+                    return string.Empty;
+                int index = _messageHistory.Count - 2;
+                return IndentMessage(_messageHistory[index].Message);
+            }
+        }
+
+        public string MessageIndented => IndentMessage(Message);
+
+        private string IndentMessage(string message)
+        {
+            string result = message;
+            if (!string.IsNullOrEmpty(result))
+            {
+                try
+                {
+                    JObject o = (JObject)JToken.ReadFrom(new JsonTextReader(new StringReader(result)));
+                    result = o.ToString(Formatting.Indented);
+                }
+                catch (Exception e) { }
+            }
+
+            return result;
         }
     }
 }

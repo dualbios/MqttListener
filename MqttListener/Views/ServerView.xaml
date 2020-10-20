@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:MqttListener.Views"
              xmlns:converters="clr-namespace:MqttListener.Converters"
+             xmlns:diffplex="clr-namespace:DiffPlex.Wpf.Controls;assembly=DiffPlex.Wpf"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="600">
     <UserControl.Resources>
@@ -13,6 +14,7 @@
             <converters:NullToVisibilityConverter IsInversed="True" x:Key="InvertedNullToVisibilityConverter"></converters:NullToVisibilityConverter>
             <converters:CollectionCountToVisibilityConverter Count="1" Kind="Great" x:Key="CollectionCountToVisibilityConverter"></converters:CollectionCountToVisibilityConverter>
             <converters:CollectionCountToVisibilityConverter Count="0" Kind="Equal" x:Key="Zero-CollectionCountToVisibilityConverter"></converters:CollectionCountToVisibilityConverter>
+            <converters:CollectionCountToVisibilityConverter Count="1" Kind="GreatOrEqual" x:Key="GreatOrEqual-One-CollectionCountToVisibilityConverter"></converters:CollectionCountToVisibilityConverter>
         </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
@@ -48,7 +50,7 @@
                 <ColumnDefinition Width="1*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <GridSplitter Grid.Column="1" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"></GridSplitter>
-            <DockPanel Grid.Column="2" 
+            <DockPanel Grid.Column="2"
                        LastChildFill="True"
                        Background="#222"
                        Margin="8"
@@ -71,25 +73,37 @@
                         </Setter>
                     </Style>
                 </DockPanel.Resources>
-                    <HeaderedContentControl Header="Name"
+                <HeaderedContentControl Header="Name"
                                             DockPanel.Dock="Top">
-                        <TextBlock Text="{Binding Name}"></TextBlock>
-                    </HeaderedContentControl>
-                    <HeaderedContentControl Header="History"
+                    <TextBlock Text="{Binding Name}"></TextBlock>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Header="History"
                                             DockPanel.Dock="Bottom"
-                                            MaxHeight="150"
+                                            
                                             Visibility="{Binding MessageHistory, Converter={StaticResource CollectionCountToVisibilityConverter}}">
-                        <ListBox ItemsSource="{Binding MessageHistory}">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <DockPanel LastChildFill="True">
-                                        <TextBlock Text="{Binding DateTime}" DockPanel.Dock="Left"></TextBlock>
-                                        <TextBlock Text="{Binding Message}"></TextBlock>
-                                    </DockPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </HeaderedContentControl>
+                    <ListBox ItemsSource="{Binding MessageHistory}"
+                             MaxHeight="150">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <DockPanel LastChildFill="True">
+                                    <TextBlock Text="{Binding DateTime}" DockPanel.Dock="Left"></TextBlock>
+                                    <TextBlock Text="{Binding Message}" MaxHeight="24"></TextBlock>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Header="Changes"
+                                        DockPanel.Dock="Bottom"
+                                        
+                                        Visibility="{Binding MessageHistory, Converter={StaticResource CollectionCountToVisibilityConverter}}">
+                    <ScrollViewer MaxHeight="150">
+                        <diffplex:DiffViewer x:Name="DiffView" OldText="{Binding OldMessage}" NewText="{Binding MessageIndented}" HeaderHeight="0" />
+                    </ScrollViewer>
+                </HeaderedContentControl>
+
                 <HeaderedContentControl Header="Message"
                                         Visibility="{Binding Child, Converter={StaticResource Zero-CollectionCountToVisibilityConverter}}">
                     <TextBlock Text="{Binding Message}" TextWrapping="Wrap"></TextBlock>
@@ -121,7 +135,8 @@
                                        Visibility="{Binding Message, Converter={StaticResource NullToVisibilityConverter}}"
                                        FontSize="12"
                                        Foreground="#aaa"
-                                       VerticalAlignment="Center"></TextBlock>
+                                       VerticalAlignment="Center"
+                                       MaxHeight="24"></TextBlock>
                             </StackPanel>
                         </HierarchicalDataTemplate>
                     </TreeView.ItemTemplate>

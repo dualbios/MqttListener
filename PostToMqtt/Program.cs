@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MQTTnet;
 using MQTTnet.Client.Options;
+using MQTTnet.Client.Publishing;
 using MQTTnet.Extensions.ManagedClient;
 
 namespace PostToMqtt
@@ -24,12 +25,12 @@ namespace PostToMqtt
 
             await _mqttClient.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic("#").Build());
             await _mqttClient.StartAsync(options);
-            await _mqttClient.PublishAsync(new MqttApplicationMessage() { Topic = topic, Payload = Encoding.UTF8.GetBytes(message) });
+            MqttClientPublishResult result = await _mqttClient.PublishAsync(new MqttApplicationMessage() { Topic = topic, Payload = Encoding.UTF8.GetBytes(message) });
         }
 
         private static void Main(string[] args)
         {
-            Run("test", "value-1").GetAwaiter().GetResult();
+            Run("\\test\\test", "value-1").GetAwaiter().GetResult();
         }
     }
 }
