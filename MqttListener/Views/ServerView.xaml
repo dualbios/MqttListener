@@ -32,7 +32,8 @@
             <StackPanel Orientation="Vertical"
                         Margin="8">
                 <TextBlock DockPanel.Dock="Bottom"
-                           Margin="8 0">
+                           Margin="8 0"
+                           MaxHeight="24">
                     <Run Text="Last topic:"></Run>
                     <Run Text="{Binding LastTopic, Mode=OneWay}"></Run>
                     <Run Text=":"></Run>
@@ -50,65 +51,71 @@
                 <ColumnDefinition Width="1*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <GridSplitter Grid.Column="1" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"></GridSplitter>
-            <DockPanel Grid.Column="2"
-                       LastChildFill="True"
-                       Background="#222"
-                       Margin="8"
-                       DataContext="{Binding SelectedTopicItem}">
-                <DockPanel.Resources>
-                    <Style TargetType="HeaderedContentControl">
-                        <Setter Property="Margin" Value="04 0"></Setter>
-                        <Setter Property="HeaderTemplate">
-                            <Setter.Value>
-                                <DataTemplate>
-                                    <Border BorderThickness="0 0 0 1"
-                                            BorderBrush="#555"
-                                            Margin="0 4">
-                                        <TextBlock Text="{Binding}"
-                                                   Foreground="#aaa"
-                                                   FontSize="14"></TextBlock>
-                                    </Border>
-                                </DataTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </DockPanel.Resources>
-                <HeaderedContentControl Header="Name"
-                                            DockPanel.Dock="Top">
-                    <TextBlock Text="{Binding Name}"></TextBlock>
-                </HeaderedContentControl>
+            <ScrollViewer Grid.Column="2"
+                          Background="#222"
+                          
+                          DataContext="{Binding SelectedTopicItem}">
+                <StackPanel Margin="8"
+                       Orientation="Vertical">
+                    <StackPanel.Resources>
+                        <Style TargetType="HeaderedContentControl">
+                            <Setter Property="Margin" Value="04 0"></Setter>
+                            <Setter Property="HeaderTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <Border BorderThickness="0 0 0 1"
+                                                BorderBrush="#555"
+                                                Margin="0 4">
+                                            <TextBlock Text="{Binding}"
+                                                       Foreground="#aaa"
+                                                       FontSize="14"></TextBlock>
+                                        </Border>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </StackPanel.Resources>
+                    <HeaderedContentControl Header="Name"
+                                                DockPanel.Dock="Top">
+                        <TextBlock Text="{Binding Name}"></TextBlock>
+                    </HeaderedContentControl>
 
-                <HeaderedContentControl Header="History"
+                     <HeaderedContentControl Header="Message">
+                        <TextBox Text="{Binding Message}"
+                                 TextWrapping="Wrap"
+                                 IsReadOnly="True"
+                                 MaxHeight="250"></TextBox>
+                    </HeaderedContentControl>
+
+                    <HeaderedContentControl Header="Changes"
                                             DockPanel.Dock="Bottom"
                                             
                                             Visibility="{Binding MessageHistory, Converter={StaticResource CollectionCountToVisibilityConverter}}">
-                    <ListBox ItemsSource="{Binding MessageHistory}"
-                             MaxHeight="150">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <DockPanel LastChildFill="True">
-                                    <TextBlock Text="{Binding DateTime}" DockPanel.Dock="Left"></TextBlock>
-                                    <TextBlock Text="{Binding Message}" MaxHeight="24"></TextBlock>
-                                </DockPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </HeaderedContentControl>
+                        <ScrollViewer MaxHeight="150">
+                            <diffplex:DiffViewer x:Name="DiffView" OldText="{Binding OldMessage}" NewText="{Binding MessageIndented}" HeaderHeight="0" />
+                        </ScrollViewer>
+                    </HeaderedContentControl>
 
-                <HeaderedContentControl Header="Changes"
-                                        DockPanel.Dock="Bottom"
-                                        
-                                        Visibility="{Binding MessageHistory, Converter={StaticResource CollectionCountToVisibilityConverter}}">
-                    <ScrollViewer MaxHeight="150">
-                        <diffplex:DiffViewer x:Name="DiffView" OldText="{Binding OldMessage}" NewText="{Binding MessageIndented}" HeaderHeight="0" />
-                    </ScrollViewer>
-                </HeaderedContentControl>
+                   
 
-                <HeaderedContentControl Header="Message"
-                                        Visibility="{Binding Child, Converter={StaticResource Zero-CollectionCountToVisibilityConverter}}">
-                    <TextBlock Text="{Binding Message}" TextWrapping="Wrap"></TextBlock>
-                </HeaderedContentControl>
-            </DockPanel>
+                    <HeaderedContentControl Header="History"
+                                            DockPanel.Dock="Bottom"
+                                            
+                                            Visibility="{Binding MessageHistory, Converter={StaticResource CollectionCountToVisibilityConverter}}">
+                        <ListBox ItemsSource="{Binding MessageHistory}"
+                                 MaxHeight="150">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <DockPanel LastChildFill="True">
+                                        <TextBlock Text="{Binding DateTime}" DockPanel.Dock="Left"></TextBlock>
+                                        <TextBlock Text="{Binding Message}" MaxHeight="24"></TextBlock>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </HeaderedContentControl>
+                </StackPanel>
+            </ScrollViewer>
             <Grid Grid.Column="0">
                 <ContentControl x:Name="SelectedItemHelper" Content="{Binding SelectedTopicItem, Mode=OneWayToSource}" Visibility="Collapsed" />
                 <TreeView ItemsSource="{Binding Root}"

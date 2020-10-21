@@ -36,6 +36,7 @@ namespace MqttListener.ViewModels
             _serviceProvider = serviceProvider;
 
             Root = new[] { new TopicItem(_rootTopicItemName) }.ToList();
+            SelectedTopicItem = Root[0];
             _appConfigurationOptions = _serviceProvider.GetService<IWritableOptions<AppConfiguration>>();
 
             _dialogHost = dialogHost;

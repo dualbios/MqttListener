@@ -49,8 +49,8 @@ namespace PostToMqtt
                 MqttClientPublishResult result = client.PublishAsync(
                     new MqttApplicationMessageBuilder()
                         .WithTopic(strings[0])
-                        .WithPayload(strings[1])
-                        .WithAtLeastOnceQoS()
+                        .WithPayload(Encoding.UTF8.GetBytes(strings[1]))
+                        .WithAtMostOnceQoS()
                         .Build())
                     .GetAwaiter()
                     .GetResult();
