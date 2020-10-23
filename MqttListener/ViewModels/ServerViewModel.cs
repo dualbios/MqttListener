@@ -25,6 +25,7 @@ namespace MqttListener.ViewModels
         private IWritableOptions<AppConfiguration> _appConfigurationOptions;
         private RelayCommand _disconnectCommand;
         private bool _isConnected;
+        private bool _isPrettyView;
         private string _lastMessage;
         private string _lastTopic;
         private IList<TopicItem> _root;
@@ -49,6 +50,12 @@ namespace MqttListener.ViewModels
         {
             get => _isConnected;
             private set => SetProperty(ref _isConnected, value);
+        }
+
+        public bool IsPrettyView
+        {
+            get => _isPrettyView;
+            set => SetProperty(ref _isPrettyView, value);
         }
 
         public string LastMessage
@@ -199,7 +206,7 @@ namespace MqttListener.ViewModels
 
         private void MqttClientReceived(MqttApplicationMessageReceivedEventArgs arg)
         {
-            string message = arg.ApplicationMessage.Payload==null? null: Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
+            string message = arg.ApplicationMessage.Payload == null ? null : Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
             TopicItem topicItem = ParseTopic(arg.ApplicationMessage.Topic, message);
             InsertTopic(topicItem, Root[0]);
 

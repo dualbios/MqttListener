@@ -15,6 +15,8 @@
             <converters:CollectionCountToVisibilityConverter Count="1" Kind="Great" x:Key="CollectionCountToVisibilityConverter"></converters:CollectionCountToVisibilityConverter>
             <converters:CollectionCountToVisibilityConverter Count="0" Kind="Equal" x:Key="Zero-CollectionCountToVisibilityConverter"></converters:CollectionCountToVisibilityConverter>
             <converters:CollectionCountToVisibilityConverter Count="1" Kind="GreatOrEqual" x:Key="GreatOrEqual-One-CollectionCountToVisibilityConverter"></converters:CollectionCountToVisibilityConverter>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></converters:BoolToVisibilityConverter>
+            <converters:BoolToVisibilityConverter IsInverted="True" x:Key="InvertedBoolToVisibilityConverter"></converters:BoolToVisibilityConverter>
         </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
@@ -53,7 +55,7 @@
             <GridSplitter Grid.Column="1" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"></GridSplitter>
             <ScrollViewer Grid.Column="2"
                           Background="#222"
-                          
+
                           DataContext="{Binding SelectedTopicItem}">
                 <StackPanel Margin="8"
                        Orientation="Vertical">
@@ -80,27 +82,41 @@
                         <TextBlock Text="{Binding Name}"></TextBlock>
                     </HeaderedContentControl>
 
-                     <HeaderedContentControl Header="Message">
-                        <TextBox Text="{Binding Message}"
+                    <HeaderedContentControl Header="Message">
+                        <DockPanel LastChildFill="True">
+                            <CheckBox IsChecked="{Binding DataContext.IsPrettyView, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                      Content="Pretty view"
+                                      DockPanel.Dock="Top"
+                                      x:Name="PrettyViewCheckBox"></CheckBox>
+
+                            <Grid>
+                                <TextBox Text="{Binding Message, Mode=OneWay}"
                                  TextWrapping="Wrap"
                                  IsReadOnly="True"
-                                 MaxHeight="250"></TextBox>
+                                 MaxHeight="250"
+                                 Visibility="{Binding IsChecked, ElementName=PrettyViewCheckBox, Converter={StaticResource InvertedBoolToVisibilityConverter}}">
+                                </TextBox>
+                                <TextBox Text="{Binding MessageIndented, Mode=OneWay}"
+                                     TextWrapping="Wrap"
+                                     IsReadOnly="True"
+                                     MaxHeight="250"
+                                     Visibility="{Binding IsChecked, ElementName=PrettyViewCheckBox, Converter={StaticResource BoolToVisibilityConverter}}"></TextBox>
+                            </Grid>
+                        </DockPanel>
                     </HeaderedContentControl>
 
                     <HeaderedContentControl Header="Changes"
                                             DockPanel.Dock="Bottom"
-                                            
+
                                             Visibility="{Binding MessageHistory, Converter={StaticResource CollectionCountToVisibilityConverter}}">
                         <ScrollViewer MaxHeight="150">
                             <diffplex:DiffViewer x:Name="DiffView" OldText="{Binding OldMessage}" NewText="{Binding MessageIndented}" HeaderHeight="0" />
                         </ScrollViewer>
                     </HeaderedContentControl>
 
-                   
-
                     <HeaderedContentControl Header="History"
                                             DockPanel.Dock="Bottom"
-                                            
+
                                             Visibility="{Binding MessageHistory, Converter={StaticResource CollectionCountToVisibilityConverter}}">
                         <ListBox ItemsSource="{Binding MessageHistory}"
                                  MaxHeight="150">
