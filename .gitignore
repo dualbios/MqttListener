@@ -6,3 +6,4 @@ MqttListener/obj/
 
 PostToMqtt/obj/
 PostToMqtt/bin/
+MqttListener/MqttListener.csproj.user

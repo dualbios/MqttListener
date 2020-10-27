@@ -17,9 +17,10 @@ namespace MqttListener.Core
         private string _message;
         private string _name;
 
-        public TopicItem(string name)
+        public TopicItem(string name, TopicItem parent)
         {
             Name = name;
+            Parent = parent;
         }
 
         public IList<TopicItem> Child
@@ -76,6 +77,8 @@ namespace MqttListener.Core
             private set => SetProperty(ref _name, value);
         }
 
+        public TopicItem Parent { get; }
+
         public int TopicCount
         {
             get => _child.Count(x => string.IsNullOrEmpty(x.Message));
@@ -108,6 +111,16 @@ namespace MqttListener.Core
             }
 
             return result;
+        }
+
+        public IEnumerable<string> GetFullName()
+        {
+            TopicItem ti = this;
+            while (ti!=null)
+            {
+                yield return ti.Name;
+                ti = ti.Parent;
+            }
         }
     }
 }

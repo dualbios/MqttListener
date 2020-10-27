@@ -25,6 +25,9 @@
             <DataTemplate DataType="{x:Type viewModels:TopicsViewModel}">
                 <views:TopicsView></views:TopicsView>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:HistoryViewModel}">
+                <views:HistoryView></views:HistoryView>
+            </DataTemplate>
 
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"></converters:NullToVisibilityConverter>
             <converters:NullToVisibilityConverter IsInversed="True" x:Key="InversedNullToVisibilityConverter"></converters:NullToVisibilityConverter>

@@ -19,7 +19,8 @@
             <converters:BoolToVisibilityConverter IsInverted="True" x:Key="InvertedBoolToVisibilityConverter"></converters:BoolToVisibilityConverter>
         </ResourceDictionary>
     </UserControl.Resources>
-    <DockPanel LastChildFill="True">
+    <Grid>
+        <DockPanel LastChildFill="True">
         <Border DockPanel.Dock="Top"
                 BorderBrush="#555"
                 BorderThickness="0 0 0 1">
@@ -115,10 +116,10 @@
                     </HeaderedContentControl>
 
                     <HeaderedContentControl Header="History"
-                                            DockPanel.Dock="Bottom"
-
-                                            Visibility="{Binding MessageHistory, Converter={StaticResource CollectionCountToVisibilityConverter}}">
-                        <ListBox ItemsSource="{Binding MessageHistory}"
+                                            DockPanel.Dock="Bottom">
+                        <Button Content="Full History"
+                                Command="{Binding DataContext.FullHistoryCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"></Button>
+                        <!--<ListBox ItemsSource="{Binding MessageHistory}"
                                  MaxHeight="150">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
@@ -128,7 +129,7 @@
                                     </DockPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
-                        </ListBox>
+                        </ListBox>-->
                     </HeaderedContentControl>
                 </StackPanel>
             </ScrollViewer>
@@ -167,4 +168,13 @@
             </Grid>
         </Grid>
     </DockPanel>
+        <Grid Visibility="{Binding DialogContent, Converter={StaticResource NullToVisibilityConverter}}"
+                    Background="#333">
+            <Border BorderThickness="1"
+                    BorderBrush="#999"
+                Margin="8">
+               <ContentControl Content="{Binding DialogContent}"></ContentControl>
+           </Border>
+        </Grid>
+        </Grid>
 </UserControl>
