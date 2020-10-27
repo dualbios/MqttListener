@@ -16,7 +16,7 @@ using MQTTnet.Extensions.ManagedClient;
 
 namespace MqttListener.ViewModels
 {
-    public class ServerViewModel : BaseViewModel
+    public class ServerViewModel : BaseViewModel, IDialogHost
     {
         private const string _rootTopicItemName = "Root";
         private readonly IDialogHost _dialogHost = null;
@@ -24,6 +24,8 @@ namespace MqttListener.ViewModels
         private readonly IServiceProvider _serviceProvider;
         private IWritableOptions<AppConfiguration> _appConfigurationOptions;
         private RelayCommand _disconnectCommand;
+        private RelayCommand _fullHistoryCommand;
+        private HistoryViewModel _historyLog;
         private bool _isConnected;
         private bool _isPrettyView;
         private string _lastMessage;
@@ -31,12 +33,13 @@ namespace MqttListener.ViewModels
         private IList<TopicItem> _root;
         private TopicItem _selectedTopicItem;
         private string _title;
+        private object _dialogContent;
 
         public ServerViewModel(IServiceProvider serviceProvider, IDialogHost dialogHost)
         {
             _serviceProvider = serviceProvider;
 
-            Root = new[] { new TopicItem(_rootTopicItemName) }.ToList();
+            Root = new[] { new TopicItem(_rootTopicItemName, null) }.ToList();
             SelectedTopicItem = Root[0];
             _appConfigurationOptions = _serviceProvider.GetService<IWritableOptions<AppConfiguration>>();
 
@@ -45,6 +48,14 @@ namespace MqttListener.ViewModels
         }
 
         public ICommand DisconnectCommand => _disconnectCommand ??= new RelayCommand(x => Disconnect());
+
+        public ICommand FullHistoryCommand => _fullHistoryCommand ??= new RelayCommand(o => OpenFullHistory());
+
+        public HistoryViewModel HistoryLog
+        {
+            get => _historyLog;
+            private set => SetProperty(ref _historyLog, value);
+        }
 
         public bool IsConnected
         {
@@ -179,7 +190,7 @@ namespace MqttListener.ViewModels
                     LastMessage = null;
                 }
 
-                Root = new[] { new TopicItem(_rootTopicItemName) }.ToList();
+                Root = new[] { new TopicItem(_rootTopicItemName, null) }.ToList();
 
                 _dialogHost.Show(new OpenConnectionDialogViewModel(_serviceProvider, ConnectAction), OpenOkAction, CancelAction);
             }
@@ -214,6 +225,11 @@ namespace MqttListener.ViewModels
             LastMessage = message;
         }
 
+        private void OpenFullHistory()
+        {
+            this.Show(new HistoryViewModel(SelectedTopicItem), null, null);
+        }
+
         private void OpenOkAction()
         {
         }
@@ -224,11 +240,11 @@ namespace MqttListener.ViewModels
             if (topicNames.Length == 0)
                 return null;
 
-            TopicItem topicItem = new TopicItem(topicNames[0]);
+            TopicItem topicItem = new TopicItem(topicNames[0], null);
             TopicItem currect = topicItem;
             foreach (string name in topicNames.Skip(1))
             {
-                TopicItem item = new TopicItem(name);
+                TopicItem item = new TopicItem(name, currect);
                 currect.Child.Add(item);
                 currect = item;
             }
@@ -236,6 +252,25 @@ namespace MqttListener.ViewModels
             currect.Message = message;
 
             return topicItem;
+        }
+
+        public object DialogContent
+        {
+            get => _dialogContent;
+            set => SetProperty(ref _dialogContent, value);
+        }
+
+        public void CloseDialog(bool result)
+        {
+            DialogContent = null;
+        }
+
+        public Task Show(IDialog dialog, Action okAction, Action cancelAction)
+        {
+            DialogContent = dialog;
+            dialog.OnOpen(this);
+
+            return Task.CompletedTask;
         }
     }
 }
