@@ -3,6 +3,7 @@ using System.Windows;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MqttListener.Configuration;
+using MqttListener.Core;
 using MqttListener.ViewModels;
 
 namespace MqttListener
@@ -27,6 +28,7 @@ namespace MqttListener
 
             services.ConfigureWritable<ConnectionsList>(Configuration.GetSection("ConnectionsList"), connectionsJsonFileName);
             services.ConfigureWritable<AppConfiguration>(Configuration.GetSection("AppConfiguration"), connectionsJsonFileName);
+            services.AddSingleton(x => new Listener(x));
 
             Provider = services.BuildServiceProvider();
 

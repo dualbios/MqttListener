@@ -14,11 +14,11 @@ using System.Windows.Shapes;
 namespace MqttListener.Views
 {
     /// <summary>
-    /// Interaction logic for HistoryView.xaml
+    /// Interaction logic for _TestView.xaml
     /// </summary>
-    public partial class HistoryView : UserControl
+    public partial class TreeView : UserControl
     {
-        public HistoryView()
+        public TreeView()
         {
             InitializeComponent();
         }
