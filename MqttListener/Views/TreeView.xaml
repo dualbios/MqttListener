@@ -88,23 +88,6 @@
                                 <diffplex:DiffViewer x:Name="DiffView" OldText="{Binding OldMessage}" NewText="{Binding MessageIndented}" HeaderHeight="0" />
                             </ScrollViewer>
                         </HeaderedContentControl>
-
-                        <HeaderedContentControl Header="History"
-                                            DockPanel.Dock="Bottom">
-                            <Button Content="Full History"
-                                Command="{Binding DataContext.FullHistoryCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"></Button>
-                            <!--<ListBox ItemsSource="{Binding MessageHistory}"
-                                 MaxHeight="150">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <DockPanel LastChildFill="True">
-                                        <TextBlock Text="{Binding DateTime}" DockPanel.Dock="Left"></TextBlock>
-                                        <TextBlock Text="{Binding Message}" MaxHeight="24"></TextBlock>
-                                    </DockPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>-->
-                        </HeaderedContentControl>
                     </StackPanel>
                 </ScrollViewer>
                 <Grid Grid.Column="0">

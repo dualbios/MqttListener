@@ -29,6 +29,9 @@ namespace MqttListener
             services.ConfigureWritable<ConnectionsList>(Configuration.GetSection("ConnectionsList"), connectionsJsonFileName);
             services.ConfigureWritable<AppConfiguration>(Configuration.GetSection("AppConfiguration"), connectionsJsonFileName);
             services.AddSingleton(x => new Listener(x));
+            services.AddSingleton(x => new ServerListViewModel(x));
+            services.AddSingleton(x => new TreeViewModel(x));
+            services.AddSingleton(x => new HistoryViewModel(x));
 
             Provider = services.BuildServiceProvider();
 

@@ -24,13 +24,15 @@ namespace MqttListener.ViewModels
         public MainWindowViewModel(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            _serverListViewModel = new ServerListViewModel(serviceProvider);
-            _treeViewModel = new TreeViewModel(serviceProvider);
-            _historyVew = new HistoryViewModel(serviceProvider);
+            _serverListViewModel =  serviceProvider.GetService<ServerListViewModel>();
+            _treeViewModel = serviceProvider.GetService<TreeViewModel>();
+            _historyVew = serviceProvider.GetService<HistoryViewModel>();
 
             View = _serverListViewModel;
 
             Listener = serviceProvider.GetService<Listener>();
+            Listener.OnConnectedEventHandler += (sender, args) => SelectedView = ViewType.Tree;
+            Listener.OnDisconnectedEventHandler += (sender, args) => SelectedView = ViewType.Tree;
         }
 
         public IDialog DialogViewModel

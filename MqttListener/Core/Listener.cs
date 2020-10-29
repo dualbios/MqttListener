@@ -33,6 +33,10 @@ namespace MqttListener.Core
             _appConfigurationOptions = _serviceProvider.GetService<IWritableOptions<AppConfiguration>>();
         }
 
+        public event EventHandler OnConnectedEventHandler;
+
+        public event EventHandler OnDisconnectedEventHandler;
+
         public string ConnectionName
         {
             get => _connectionName;
@@ -42,7 +46,20 @@ namespace MqttListener.Core
         public bool IsConnected
         {
             get => _isConnected;
-            private set => SetProperty(ref _isConnected, value);
+            private set
+            {
+                if (SetProperty(ref _isConnected, value))
+                {
+                    if (value)
+                    {
+                        OnConnectedEventHandler?.Invoke(this, EventArgs.Empty);
+                    }
+                    else
+                    {
+                        OnDisconnectedEventHandler?.Invoke(this, EventArgs.Empty);
+                    }
+                }
+            }
         }
 
         public string LastMessage
@@ -116,7 +133,6 @@ namespace MqttListener.Core
                 await _mqttClient.StartAsync(options);
 
                 _mqttClient.UseApplicationMessageReceivedHandler(MqttClientReceived);
-
 
                 if (token.IsCancellationRequested)
                 {
