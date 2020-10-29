@@ -5,68 +5,61 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using Microsoft.Extensions.DependencyInjection;
 using MqttListener.Configuration;
-using MqttListener.Core;
-using MqttListener.Interfaces;
+using MqttListener.ViewModels;
 using MQTTnet;
 using MQTTnet.Client.Options;
 using MQTTnet.Extensions.ManagedClient;
 
-namespace MqttListener.ViewModels
+namespace MqttListener.Core
 {
-    public class ServerViewModel : BaseViewModel, IDialogHost
+    public class Listener : BaseViewModel
     {
         private const string _rootTopicItemName = "Root";
-        private readonly IDialogHost _dialogHost = null;
         private readonly IManagedMqttClient _mqttClient = new MqttFactory().CreateManagedMqttClient();
         private readonly IServiceProvider _serviceProvider;
         private IWritableOptions<AppConfiguration> _appConfigurationOptions;
-        private RelayCommand _disconnectCommand;
-        private RelayCommand _fullHistoryCommand;
-        private HistoryViewModel _historyLog;
+        private string _connectionName;
         private bool _isConnected;
-        private bool _isPrettyView;
         private string _lastMessage;
         private string _lastTopic;
         private IList<TopicItem> _root;
-        private TopicItem _selectedTopicItem;
-        private string _title;
-        private object _dialogContent;
 
-        public ServerViewModel(IServiceProvider serviceProvider, IDialogHost dialogHost)
+        public Listener(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-
             Root = new[] { new TopicItem(_rootTopicItemName, null) }.ToList();
-            SelectedTopicItem = Root[0];
             _appConfigurationOptions = _serviceProvider.GetService<IWritableOptions<AppConfiguration>>();
-
-            _dialogHost = dialogHost;
-            _dialogHost.Show(new OpenConnectionDialogViewModel(serviceProvider, ConnectAction), OpenOkAction, CancelAction);
         }
 
-        public ICommand DisconnectCommand => _disconnectCommand ??= new RelayCommand(x => Disconnect());
+        public event EventHandler OnConnectedEventHandler;
 
-        public ICommand FullHistoryCommand => _fullHistoryCommand ??= new RelayCommand(o => OpenFullHistory());
+        public event EventHandler OnDisconnectedEventHandler;
 
-        public HistoryViewModel HistoryLog
+        public string ConnectionName
         {
-            get => _historyLog;
-            private set => SetProperty(ref _historyLog, value);
+            get => _connectionName;
+            private set => SetProperty(ref _connectionName, value);
         }
 
         public bool IsConnected
         {
             get => _isConnected;
-            private set => SetProperty(ref _isConnected, value);
-        }
-
-        public bool IsPrettyView
-        {
-            get => _isPrettyView;
-            set => SetProperty(ref _isPrettyView, value);
+            private set
+            {
+                if (SetProperty(ref _isConnected, value))
+                {
+                    if (value)
+                    {
+                        OnConnectedEventHandler?.Invoke(this, EventArgs.Empty);
+                    }
+                    else
+                    {
+                        OnDisconnectedEventHandler?.Invoke(this, EventArgs.Empty);
+                    }
+                }
+            }
         }
 
         public string LastMessage
@@ -87,28 +80,16 @@ namespace MqttListener.ViewModels
             private set => SetProperty(ref _root, value);
         }
 
-        public TopicItem SelectedTopicItem
-        {
-            get => _selectedTopicItem;
-            set => SetProperty(ref _selectedTopicItem, value);
-        }
-
-        public string Title
-        {
-            get => _title;
-            private set => SetProperty(ref _title, value);
-        }
-
-        private void CancelAction()
-        {
-        }
-
-        private async Task ConnectAction(ConnectionItem connectionItem, CancellationToken token)
+        public async Task ConnectAction(ConnectionItem connectionItem, CancellationToken token)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
 
             try
             {
+                await Task.Delay(300, token);
+
+                token.ThrowIfCancellationRequested();
+
                 if (!int.TryParse(connectionItem.Port, out int port))
                 {
                     port = 1883;
@@ -132,7 +113,7 @@ namespace MqttListener.ViewModels
                 _mqttClient.UseConnectedHandler(x =>
                 {
                     IsConnected = true;
-                    Title = connectionItem.ConnectionName;
+                    ConnectionName = connectionItem.ConnectionName;
                     if (!tcs.Task.IsCompleted)
                     {
                         tcs.SetResult(true);
@@ -153,8 +134,6 @@ namespace MqttListener.ViewModels
 
                 _mqttClient.UseApplicationMessageReceivedHandler(MqttClientReceived);
 
-                await Task.Delay(300);
-
                 if (token.IsCancellationRequested)
                 {
                     Disconnect();
@@ -172,7 +151,7 @@ namespace MqttListener.ViewModels
             await tcs.Task;
         }
 
-        private void Disconnect()
+        public void Disconnect()
         {
             if (_mqttClient != null)
             {
@@ -191,8 +170,6 @@ namespace MqttListener.ViewModels
                 }
 
                 Root = new[] { new TopicItem(_rootTopicItemName, null) }.ToList();
-
-                _dialogHost.Show(new OpenConnectionDialogViewModel(_serviceProvider, ConnectAction), OpenOkAction, CancelAction);
             }
         }
 
@@ -225,15 +202,6 @@ namespace MqttListener.ViewModels
             LastMessage = message;
         }
 
-        private void OpenFullHistory()
-        {
-            this.Show(new HistoryViewModel(SelectedTopicItem), null, null);
-        }
-
-        private void OpenOkAction()
-        {
-        }
-
         private TopicItem ParseTopic(string eTopic, string message)
         {
             string[] topicNames = eTopic.Split('/');
@@ -252,25 +220,6 @@ namespace MqttListener.ViewModels
             currect.Message = message;
 
             return topicItem;
-        }
-
-        public object DialogContent
-        {
-            get => _dialogContent;
-            set => SetProperty(ref _dialogContent, value);
-        }
-
-        public void CloseDialog(bool result)
-        {
-            DialogContent = null;
-        }
-
-        public Task Show(IDialog dialog, Action okAction, Action cancelAction)
-        {
-            DialogContent = dialog;
-            dialog.OnOpen(this);
-
-            return Task.CompletedTask;
         }
     }
 }

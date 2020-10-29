@@ -115,8 +115,13 @@ namespace MqttListener.Core
 
         public IEnumerable<string> GetFullName()
         {
+            return InternalGetFullName().Reverse().ToList();
+        }
+
+        private IEnumerable<string> InternalGetFullName()
+        {
             TopicItem ti = this;
-            while (ti!=null)
+            while (ti != null)
             {
                 yield return ti.Name;
                 ti = ti.Parent;

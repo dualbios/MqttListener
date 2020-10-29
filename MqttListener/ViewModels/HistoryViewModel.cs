@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
+using Microsoft.Extensions.DependencyInjection;
 using MqttListener.Core;
 using MqttListener.Interfaces;
 
@@ -9,22 +10,27 @@ namespace MqttListener.ViewModels
 {
     public class HistoryViewModel : BaseViewModel, IDialog
     {
-        private readonly TopicItem _topicItem;
+        private readonly IServiceProvider _serviceProvider;
+
         private RelayCommand _closeCommand;
         private IDialogHost _dialogHost;
         private TopicMessageHistoryItem _selectedMessageHistoryItem;
+        private Listener _listener;
+        private TopicItem _selectedTopicItem;
 
-        public HistoryViewModel(TopicItem topicItem)
+        public HistoryViewModel(IServiceProvider serviceProvider)
         {
-            _topicItem = topicItem;
-            SelectedMessageHistoryItem = _topicItem.MessageHistory?.OrderByDescending(x => x.DateTime).FirstOrDefault();
-            TopicItemName = string.Join("\\", topicItem.GetFullName().Reverse());
+            _serviceProvider = serviceProvider;
+            _listener = _serviceProvider.GetService<Listener>();
+            SelectedTopicItem = _listener?.Root[0];
         }
 
-        public ICommand CloseCommand => _closeCommand ??= new RelayCommand(o => Close());
-        public IEnumerable<TopicMessageHistoryItem> MessageHistory => _topicItem.MessageHistory;
+        public object Root => _listener.Root;
 
-        public bool IsHistoryEmpty => !_topicItem.MessageHistory.Any();
+        public ICommand CloseCommand => _closeCommand ??= new RelayCommand(o => Close());
+        public IEnumerable<TopicMessageHistoryItem> MessageHistory => _selectedTopicItem?.MessageHistory;
+
+        public bool IsHistoryEmpty => _selectedTopicItem?.MessageHistory == null ? false : !_selectedTopicItem.MessageHistory.Any();
 
         public string NewMessage { get; private set; }
 
@@ -34,7 +40,19 @@ namespace MqttListener.ViewModels
 
         public DateTime? OldTextDate { get; private set; }
 
-        public string TopicItemName { get; private set; }
+        public string TopicItemName => _selectedTopicItem == null ? null : String.Join("\\", _selectedTopicItem.GetFullName());
+
+        public TopicItem SelectedTopicItem
+        {
+            get => _selectedTopicItem;
+            set
+            {
+                if (SetProperty(ref _selectedTopicItem, value))
+                {
+                    OnPropertyChanged(null);
+                }
+            }
+        }
 
         public TopicMessageHistoryItem SelectedMessageHistoryItem
         {
@@ -43,36 +61,39 @@ namespace MqttListener.ViewModels
             {
                 if (SetProperty(ref _selectedMessageHistoryItem, value))
                 {
-                    var collection = _topicItem.MessageHistory as IList<TopicMessageHistoryItem>;
-                    if (collection != null)
+                    if (_selectedTopicItem?.MessageHistory != null)
                     {
-                        int index = collection.IndexOf(_selectedMessageHistoryItem);
-                        if (index == -1)
+                        var collection = _selectedTopicItem.MessageHistory as IList<TopicMessageHistoryItem>;
+                        if (collection != null)
                         {
-                            NewTextDate = null;
-                            NewMessage = null;
-                            OldMessage = null;
-                            OldTextDate = null;
-                        }
-                        else
-                        {
-                            NewTextDate = _selectedMessageHistoryItem.DateTime;
-                            NewMessage = _selectedMessageHistoryItem.Message;
-
-                            TopicMessageHistoryItem oldItem = null;
-                            if (index + 1 < collection.Count)
+                            int index = collection.IndexOf(_selectedMessageHistoryItem);
+                            if (index == -1)
                             {
-                                oldItem = collection.ElementAt(index + 1);
+                                NewTextDate = null;
+                                NewMessage = null;
+                                OldMessage = null;
+                                OldTextDate = null;
+                            }
+                            else
+                            {
+                                NewTextDate = _selectedMessageHistoryItem.DateTime;
+                                NewMessage = _selectedMessageHistoryItem.Message;
+
+                                TopicMessageHistoryItem oldItem = null;
+                                if (index + 1 < collection.Count)
+                                {
+                                    oldItem = collection.ElementAt(index + 1);
+                                }
+
+                                OldTextDate = oldItem?.DateTime;
+                                OldMessage = oldItem?.Message;
                             }
 
-                            OldTextDate = oldItem?.DateTime;
-                            OldMessage = oldItem?.Message;
+                            OnPropertyChanged(nameof(NewMessage));
+                            OnPropertyChanged(nameof(NewTextDate));
+                            OnPropertyChanged(nameof(OldMessage));
+                            OnPropertyChanged(nameof(OldTextDate));
                         }
-
-                        OnPropertyChanged(nameof(NewMessage));
-                        OnPropertyChanged(nameof(NewTextDate));
-                        OnPropertyChanged(nameof(OldMessage));
-                        OnPropertyChanged(nameof(OldTextDate));
                     }
                 }
             }

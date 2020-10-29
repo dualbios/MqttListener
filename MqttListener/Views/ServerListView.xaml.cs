@@ -14,18 +14,13 @@ using System.Windows.Shapes;
 namespace MqttListener.Views
 {
     /// <summary>
-    /// Interaction logic for _TestView.xaml
+    /// Interaction logic for ServerListView.xaml
     /// </summary>
-    public partial class ServerView : UserControl
+    public partial class ServerListView : UserControl
     {
-        public ServerView()
+        public ServerListView()
         {
             InitializeComponent();
-        }
-
-        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            SelectedItemHelper.Content = e.NewValue;
         }
     }
 }
