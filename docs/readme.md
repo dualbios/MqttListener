@@ -20,3 +20,4 @@ Structured view of MQTT topics
 - Last topic
 - Full log view
 - Chart view
+- Post topic view
