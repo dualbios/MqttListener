@@ -31,18 +31,12 @@ namespace MqttListener.Configuration
 
         public T Get(string name) => _options.Get(name);
 
-        public void Update(Action<T> applyChanges)
+        public void Save()
         {
             string physicalPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), _file);
 
             var jObject = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(physicalPath));
             T sectionObject = Value;
-            //if (jObject.TryGetValue(_section, out JToken section))
-            //    sectionObject = JsonConvert.DeserializeObject<T>(section.ToString());
-            //else
-            //    sectionObject = Value ?? new T();
-
-            applyChanges(sectionObject);
 
             jObject[_section] = JObject.Parse(JsonConvert.SerializeObject(sectionObject));
             File.WriteAllText(physicalPath, JsonConvert.SerializeObject(jObject, Formatting.Indented));

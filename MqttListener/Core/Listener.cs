@@ -101,7 +101,7 @@ namespace MqttListener.Core
                     .WithClientOptions(new MqttClientOptionsBuilder()
                         .WithClientId(_appConfigurationOptions.Value.ClientId)
                         .WithTcpServer(connectionItem.Host, port)
-                        .WithCredentials(connectionItem.Username, /*connectionItem.Password*/"mqtt")
+                        .WithCredentials(connectionItem.Username, connectionItem.Password)
                         .Build())
                     .WithAutoReconnectDelay(TimeSpan.MaxValue)
                     .Build();

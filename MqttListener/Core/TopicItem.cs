@@ -107,7 +107,7 @@ namespace MqttListener.Core
                     JObject o = (JObject)JToken.ReadFrom(new JsonTextReader(new StringReader(result)));
                     result = o.ToString(Formatting.Indented);
                 }
-                catch (Exception e) { }
+                catch  { }
             }
 
             return result;

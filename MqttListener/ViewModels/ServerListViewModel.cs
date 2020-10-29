@@ -105,6 +105,7 @@ namespace MqttListener.ViewModels
                     return;
 
                 IsConnecting = false;
+                _connectionListOptions.Save();
             }
             catch (Exception e)
             {
@@ -145,7 +146,7 @@ namespace MqttListener.ViewModels
 
         private void OkAction()
         {
-            _connectionListOptions.Update(x => { });
+            _connectionListOptions.Save();
             this.OnPropertyChanged(null);
         }
 

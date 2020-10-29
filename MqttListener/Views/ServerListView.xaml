@@ -43,9 +43,8 @@
     </UserControl.Resources>
     <Grid>
         <Grid MaxWidth="700"
-                       Margin="64">
-            <DockPanel 
-                       LastChildFill="True">
+              Margin="64">
+            <DockPanel LastChildFill="True">
                 <StackPanel DockPanel.Dock="Bottom">
                     <Button Margin="8"
                             HorizontalAlignment="Right"
@@ -116,7 +115,8 @@
                                     </HeaderedContentControl>
                                     <HeaderedContentControl Header="Password">
                                         <PasswordBox x:Name="PasswordBox"
-                                                     Width="165" />
+                                                     Width="165"
+                                                     PasswordChanged="PasswordBox_OnPasswordChanged" />
                                     </HeaderedContentControl>
                                 </StackPanel>
                             </GroupBox>
@@ -149,13 +149,13 @@
                     </ScrollViewer>
                 </DockPanel>
             </DockPanel>
-            
+
             <Grid Background="#ff000000"
                   Visibility="{Binding Dialog, Converter={StaticResource NullToVisibilityConverter}}">
-            <ContentControl Content="{Binding Dialog}" />
+                <ContentControl Content="{Binding Dialog}" />
+            </Grid>
         </Grid>
-        </Grid>
-        
+
         <Grid Background="#bb000000"
               Visibility="{Binding IsConnecting, Converter={StaticResource BoolToVisibilityConverter}}">
             <StackPanel MaxWidth="250"

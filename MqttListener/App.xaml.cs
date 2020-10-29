@@ -37,7 +37,13 @@ namespace MqttListener
 
             var context = new MainWindowViewModel(Provider);
             var view = new MainWindow() { DataContext = context };
+            view.Closed += View_Closed;
             view.Show();
+        }
+
+        private void View_Closed(object sender, EventArgs e)
+        {
+            Provider.GetService<Listener>().Disconnect();
         }
     }
 }
