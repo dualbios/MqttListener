@@ -7,10 +7,11 @@ using System.Windows.Input;
 using Microsoft.Extensions.DependencyInjection;
 using MqttListener.Configuration;
 using MqttListener.Core;
+using MqttListener.Interfaces;
 
 namespace MqttListener.ViewModels
 {
-    public class ServerListViewModel : BaseViewModel
+    public class ServerListViewModel : BaseViewModel, IDialogHost
     {
         private IWritableOptions<AppConfiguration> _appConfigurationOptions;
         private RelayCommand _cancelCommand;
@@ -24,6 +25,10 @@ namespace MqttListener.ViewModels
         private ConnectionItem _selectedItem;
         private IServiceProvider _serviceProvider;
         private RelayCommand _disConnectCommand;
+        private object _dialog;
+        private Action _cancelDialogAction;
+        private Action _okDialogAction;
+        private RelayCommand _topicsEditCommand;
 
         public ServerListViewModel(IServiceProvider serviceProvider)
         {
@@ -111,5 +116,48 @@ namespace MqttListener.ViewModels
         {
             Listener.Disconnect();
         }
+
+        public object Dialog
+        {
+            get => _dialog;
+            private set => SetProperty(ref _dialog, value);
+        }
+
+        public void CloseDialog(bool result)
+        {
+            Dialog = null;
+            if (result)
+            {
+                _okDialogAction?.Invoke();
+            }
+            else
+            {
+                _cancelDialogAction?.Invoke();
+            }
+
+            _okDialogAction = null;
+            _cancelCommand = null;
+        }
+
+        public ICommand TopicsEditCommand => _topicsEditCommand ??= 
+            new RelayCommand(x => 
+                this.Show(new TopicsViewModel(SelectedItem), OkAction, null));
+
+        private void OkAction()
+        {
+            _connectionListOptions.Update(x => { });
+            this.OnPropertyChanged(null);
+        }
+
+        public Task Show(IDialog dialog, Action okAction, Action cancelAction)
+        {
+            Dialog = dialog;
+            dialog.OnOpen(this);
+            _okDialogAction = okAction;
+            _cancelDialogAction = cancelAction;
+
+            return Task.CompletedTask;
+        }
+
     }
 }

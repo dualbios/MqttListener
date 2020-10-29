@@ -17,12 +17,6 @@
             <DataTemplate DataType="{x:Type viewModels:TreeViewModel}">
                 <views:TreeView></views:TreeView>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type viewModels:OpenConnectionDialogViewModel}">
-                <views:OpenConnectionControlView></views:OpenConnectionControlView>
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type viewModels:ConnectDialogViewModel}">
-                <views:ConnectDialogView></views:ConnectDialogView>
-            </DataTemplate>
             <DataTemplate DataType="{x:Type viewModels:TopicsViewModel}">
                 <views:TopicsView></views:TopicsView>
             </DataTemplate>

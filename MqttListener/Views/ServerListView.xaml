@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:MqttListener.Views"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:MqttListener.ViewModels"
+             xmlns:views="clr-namespace:MqttListener.Views"
              d:DesignHeight="450"
              d:DesignWidth="800"
              mc:Ignorable="d">
@@ -16,6 +18,10 @@
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
             <converters:NullToVisibilityConverter x:Key="InvertedNullToVisibilityConverter"
                                                   IsInversed="True" />
+
+            <DataTemplate DataType="{x:Type viewModels:TopicsViewModel}">
+                <views:TopicsView />
+            </DataTemplate>
 
             <Style TargetType="HeaderedContentControl">
                 <Setter Property="Margin" Value="04,0" />
@@ -36,9 +42,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Grid>
-            <DockPanel MaxWidth="700"
-                       Margin="64"
+        <Grid MaxWidth="700"
+                       Margin="64">
+            <DockPanel 
                        LastChildFill="True">
                 <StackPanel DockPanel.Dock="Bottom">
                     <Button Margin="8"
@@ -143,7 +149,13 @@
                     </ScrollViewer>
                 </DockPanel>
             </DockPanel>
+            
+            <Grid Background="#ff000000"
+                  Visibility="{Binding Dialog, Converter={StaticResource NullToVisibilityConverter}}">
+            <ContentControl Content="{Binding Dialog}" />
         </Grid>
+        </Grid>
+        
         <Grid Background="#bb000000"
               Visibility="{Binding IsConnecting, Converter={StaticResource BoolToVisibilityConverter}}">
             <StackPanel MaxWidth="250"

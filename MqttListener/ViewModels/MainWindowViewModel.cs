@@ -32,7 +32,7 @@ namespace MqttListener.ViewModels
 
             Listener = serviceProvider.GetService<Listener>();
             Listener.OnConnectedEventHandler += (sender, args) => SelectedView = ViewType.Tree;
-            Listener.OnDisconnectedEventHandler += (sender, args) => SelectedView = ViewType.Tree;
+            Listener.OnDisconnectedEventHandler += (sender, args) => SelectedView = ViewType.Server;
         }
 
         public IDialog DialogViewModel
