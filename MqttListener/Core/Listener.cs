@@ -173,6 +173,16 @@ namespace MqttListener.Core
             }
         }
 
+        public Task Post(string topic, string paylolad)
+        {
+            return _mqttClient.PublishAsync(
+                 new MqttApplicationMessageBuilder()
+                     .WithTopic(topic)
+                     .WithPayload(Encoding.UTF8.GetBytes(paylolad))
+                     .WithAtMostOnceQoS()
+                     .Build());
+        }
+
         private void InsertTopic(TopicItem topicItem, TopicItem root)
         {
             TopicItem item = root.Child.FirstOrDefault(x => x.Name == topicItem.Name);
