@@ -14,19 +14,21 @@ namespace MqttListener.ViewModels
         private readonly IServiceProvider _serviceProvider;
         private Action _cancelAction = null;
         private IDialog _dialogViewModel;
+        private HistoryViewModel _historyVew;
         private Action _okAction = null;
+        private PublishViewModel _publishView;
         private ViewType _selectedView;
         private ServerListViewModel _serverListViewModel;
         private TreeViewModel _treeViewModel;
         private object _view;
-        private HistoryViewModel _historyVew;
 
         public MainWindowViewModel(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            _serverListViewModel =  serviceProvider.GetService<ServerListViewModel>();
+            _serverListViewModel = serviceProvider.GetService<ServerListViewModel>();
             _treeViewModel = serviceProvider.GetService<TreeViewModel>();
             _historyVew = serviceProvider.GetService<HistoryViewModel>();
+            _publishView = serviceProvider.GetService<PublishViewModel>();
 
             View = _serverListViewModel;
 
@@ -54,18 +56,6 @@ namespace MqttListener.ViewModels
                 }
             }
         }
-
-        private object GetView(ViewType viewType)
-        {
-            return viewType switch
-            {
-                ViewType.Server => _serverListViewModel,
-                ViewType.Tree => _treeViewModel,
-                ViewType.History => _historyVew,
-                _ => null,
-            };
-        }
-
 
         public ServerListViewModel ServerListViewModel
         {
@@ -115,6 +105,18 @@ namespace MqttListener.ViewModels
             _cancelAction = cancelAction;
 
             return Task.CompletedTask;
+        }
+
+        private object GetView(ViewType viewType)
+        {
+            return viewType switch
+            {
+                ViewType.Server => _serverListViewModel,
+                ViewType.Tree => _treeViewModel,
+                ViewType.History => _historyVew,
+                ViewType.Publish => _publishView,
+                _ => null,
+            };
         }
     }
 }

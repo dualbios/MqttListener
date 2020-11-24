@@ -5,6 +5,7 @@
         Server,
         Tree,
         History,
-        Chart
+        Chart,
+        Publish
     }
 }

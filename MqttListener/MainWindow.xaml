@@ -11,7 +11,7 @@
         xmlns:ui="http://schemas.modernwpf.com/2019"
         ui:WindowHelper.UseModernWindowStyle="True"
         mc:Ignorable="d"
-        Title="MainWindow" Height="650" Width="900">
+        Title="MQTT Listener" Height="650" Width="900">
     <Window.Resources>
         <ResourceDictionary>
             <DataTemplate DataType="{x:Type viewModels:TreeViewModel}">
@@ -26,6 +26,10 @@
 
             <DataTemplate DataType="{x:Type viewModels:ServerListViewModel}">
                 <views:ServerListView></views:ServerListView>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewModels:PublishViewModel}">
+                <views:PublishView></views:PublishView>
             </DataTemplate>
 
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"></converters:NullToVisibilityConverter>
@@ -61,6 +65,9 @@
                              IsEnabled="{Binding Listener.IsConnected}"/>
                 <RadioButton Content="History View" 
                              IsChecked="{Binding SelectedView, Converter={StaticResource ViewTypeConverter}, ConverterParameter={x:Static core:ViewType.History}}"
+                             IsEnabled="{Binding Listener.IsConnected}"/>
+                <RadioButton Content="Publish View" 
+                             IsChecked="{Binding SelectedView, Converter={StaticResource ViewTypeConverter}, ConverterParameter={x:Static core:ViewType.Publish}}"
                              IsEnabled="{Binding Listener.IsConnected}"/>
                 <!--<RadioButton Content="Chart View" IsChecked="{Binding SelectedView, Converter={StaticResource ViewTypeConverter}, ConverterParameter={x:Static core:ViewType.Chart}}"/>-->
             </StackPanel>

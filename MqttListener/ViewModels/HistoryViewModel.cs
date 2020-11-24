@@ -40,7 +40,7 @@ namespace MqttListener.ViewModels
 
         public DateTime? OldTextDate { get; private set; }
 
-        public string TopicItemName => _selectedTopicItem == null ? null : String.Join("\\", _selectedTopicItem.GetFullName());
+        public string TopicItemName => _selectedTopicItem == null ? null : String.Join("/", _selectedTopicItem.GetFullName());
 
         public TopicItem SelectedTopicItem
         {
