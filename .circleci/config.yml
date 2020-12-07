@@ -6,7 +6,10 @@
  jobs:
    build:
      executor: win/default     
-    
+     filters: 
+        branches:
+            only: master
+        
      steps:
        - checkout
        - run: dotnet build
