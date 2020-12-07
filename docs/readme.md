@@ -12,6 +12,7 @@ Structured view of MQTT topics
 - History view
 - Multiple server
 - Diff changes
+- Publish topic view
 
 
 
@@ -20,4 +21,3 @@ Structured view of MQTT topics
 - Last topic
 - Full log view
 - Chart view
-- Post topic view
