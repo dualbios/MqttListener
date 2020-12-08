@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +27,14 @@ namespace MqttListener
             configurationBuilder.AddJsonFile(connectionsJsonFileName, true, reloadOnChange: true);
             Configuration = configurationBuilder.Build();
 
-            services.ConfigureWritable<ConnectionsList>(Configuration.GetSection("ConnectionsList"), connectionsJsonFileName);
+            services.ConfigureWritable<ConnectionsList>(
+                Configuration.GetSection("ConnectionsList"),
+                c =>
+                {
+                    if (c.Connections == null)
+                        c.Connections = new List<ConnectionItem>() { new ConnectionItem() { ConnectionName = "_New_connection_" } };
+                },
+                connectionsJsonFileName);
             services.ConfigureWritable<AppConfiguration>(Configuration.GetSection("AppConfiguration"), connectionsJsonFileName);
             services.AddSingleton(x => new Listener(x));
             services.AddSingleton(x => new ServerListViewModel(x));

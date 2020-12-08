@@ -34,8 +34,19 @@ namespace MqttListener.Configuration
         public void Save()
         {
             string physicalPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), _file);
+            JObject jObject = null;
+            if (File.Exists(physicalPath))
+            {
+                jObject = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(physicalPath));
+            }
+            else
+            {
+                jObject = new JObject
+                {
+                    { _section, "" }
+                };
+            }
 
-            var jObject = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(physicalPath));
             T sectionObject = Value;
 
             jObject[_section] = JObject.Parse(JsonConvert.SerializeObject(sectionObject));
