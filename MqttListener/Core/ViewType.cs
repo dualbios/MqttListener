@@ -2,6 +2,7 @@
 {
     public enum ViewType
     {
+        About,
         Server,
         Tree,
         History,

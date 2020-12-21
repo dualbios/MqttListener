@@ -41,6 +41,7 @@ namespace MqttListener
             services.AddSingleton(x => new TreeViewModel(x));
             services.AddSingleton(x => new HistoryViewModel(x));
             services.AddSingleton(x => new PublishViewModel(x));
+            services.AddSingleton(x => new AboutViewModel());
 
             Provider = services.BuildServiceProvider();
 

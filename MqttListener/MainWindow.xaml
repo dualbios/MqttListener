@@ -14,6 +14,9 @@
         Title="MQTT Listener" Height="650" Width="900">
     <Window.Resources>
         <ResourceDictionary>
+            <DataTemplate DataType="{x:Type viewModels:AboutViewModel}">
+                <views:AboutView></views:AboutView>
+            </DataTemplate>
             <DataTemplate DataType="{x:Type viewModels:TreeViewModel}">
                 <views:TreeView></views:TreeView>
             </DataTemplate>
@@ -23,11 +26,9 @@
             <DataTemplate DataType="{x:Type viewModels:HistoryViewModel}">
                 <views:HistoryView></views:HistoryView>
             </DataTemplate>
-
             <DataTemplate DataType="{x:Type viewModels:ServerListViewModel}">
                 <views:ServerListView></views:ServerListView>
             </DataTemplate>
-
             <DataTemplate DataType="{x:Type viewModels:PublishViewModel}">
                 <views:PublishView></views:PublishView>
             </DataTemplate>
@@ -42,10 +43,9 @@
     </Window.Resources>
     <Grid>
         <DockPanel LastChildFill="True">
-            <StackPanel Orientation="Horizontal"
-                        DockPanel.Dock="Top"
-                        Margin="0 8">
-                <StackPanel.Resources>
+            <DockPanel DockPanel.Dock="Top"
+                            Margin="0 8">
+                <DockPanel.Resources>
                     <Style TargetType="{x:Type RadioButton}">
                         <Setter Property="Margin" Value="8 0"></Setter>
                         <Setter Property="Template">
@@ -57,22 +57,27 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-                </StackPanel.Resources>
-                <RadioButton Content="Server List" 
-                             IsChecked="{Binding SelectedView, Converter={StaticResource ViewTypeConverter}, ConverterParameter={x:Static core:ViewType.Server}}"/>
-                <RadioButton Content="Tree View" 
-                             IsChecked="{Binding SelectedView, Converter={StaticResource ViewTypeConverter}, ConverterParameter={x:Static core:ViewType.Tree}}"
-                             IsEnabled="{Binding Listener.IsConnected}"/>
-                <RadioButton Content="History View" 
-                             IsChecked="{Binding SelectedView, Converter={StaticResource ViewTypeConverter}, ConverterParameter={x:Static core:ViewType.History}}"
-                             IsEnabled="{Binding Listener.IsConnected}"/>
-                <RadioButton Content="Publish View" 
-                             IsChecked="{Binding SelectedView, Converter={StaticResource ViewTypeConverter}, ConverterParameter={x:Static core:ViewType.Publish}}"
-                             IsEnabled="{Binding Listener.IsConnected}"/>
-                <!--<RadioButton Content="Chart View" IsChecked="{Binding SelectedView, Converter={StaticResource ViewTypeConverter}, ConverterParameter={x:Static core:ViewType.Chart}}"/>-->
-            </StackPanel>
-            
-            
+                </DockPanel.Resources>
+
+                <RadioButton Content="About" 
+                             HorizontalAlignment="Right"
+                             DockPanel.Dock="Right"
+                             IsChecked="{Binding SelectedView, Converter={StaticResource ViewTypeConverter}, ConverterParameter={x:Static core:ViewType.About}}"/>
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton Content="Server List" 
+                                 IsChecked="{Binding SelectedView, Converter={StaticResource ViewTypeConverter}, ConverterParameter={x:Static core:ViewType.Server}}"/>
+                    <RadioButton Content="Tree View" 
+                                 IsChecked="{Binding SelectedView, Converter={StaticResource ViewTypeConverter}, ConverterParameter={x:Static core:ViewType.Tree}}"
+                                 IsEnabled="{Binding Listener.IsConnected}"/>
+                    <RadioButton Content="History View" 
+                                 IsChecked="{Binding SelectedView, Converter={StaticResource ViewTypeConverter}, ConverterParameter={x:Static core:ViewType.History}}"
+                                 IsEnabled="{Binding Listener.IsConnected}"/>
+                    <RadioButton Content="Publish View" 
+                                 IsChecked="{Binding SelectedView, Converter={StaticResource ViewTypeConverter}, ConverterParameter={x:Static core:ViewType.Publish}}"
+                                 IsEnabled="{Binding Listener.IsConnected}"/>
+                </StackPanel>
+            </DockPanel>
+
             <ContentControl Content="{Binding View}" />
             
         </DockPanel>

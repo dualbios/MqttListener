@@ -43,6 +43,7 @@
 
   <PropertyGroup>
     <PackageLicenseFile></PackageLicenseFile>
+    <ApplicationIcon>Mqtt-Listener.ico</ApplicationIcon>
   </PropertyGroup>
 
 </Project>

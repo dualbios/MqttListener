@@ -1,0 +1,53 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:MqttListener.Media">
+    <Canvas x:Key="svg8"  Name="svg8" Width="90.311108" Height="90.311108">
+        <Canvas.RenderTransform>
+            <TranslateTransform X="0" Y="0"/>
+        </Canvas.RenderTransform>
+        <Canvas.Resources>
+            <LinearGradientBrush xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Key="linearGradient4520" MappingMode="RelativeToBoundingBox" StartPoint="0,0" EndPoint="1,1">
+                <LinearGradientBrush.GradientStops>
+                    <GradientStopCollection>
+                        <GradientStop Color="#FF53B3FF" Offset="0"/>
+                        <GradientStop Color="#FFFCFCFC" Offset="1"/>
+                    </GradientStopCollection>
+                </LinearGradientBrush.GradientStops>
+            </LinearGradientBrush>
+            <LinearGradientBrush xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Key="linearGradient4526" MappingMode="Absolute" StartPoint="137,273" EndPoint="137,188">
+                <LinearGradientBrush.GradientStops>
+                    <GradientStopCollection>
+                        <GradientStop Color="#FF53B3FF" Offset="0"/>
+                        <GradientStop Color="#FFFCFCFC" Offset="1"/>
+                    </GradientStopCollection>
+                </LinearGradientBrush.GradientStops>
+                <LinearGradientBrush.Transform>
+                    <TranslateTransform X="-91.954077"/>
+                </LinearGradientBrush.Transform>
+            </LinearGradientBrush>
+        </Canvas.Resources>
+        <!--Unknown tag: sodipodi:namedview-->
+        <!--Unknown tag: metadata-->
+        <Canvas Name="layer1">
+            <Canvas.RenderTransform>
+                <TranslateTransform X="0" Y="-206.6889"/>
+            </Canvas.RenderTransform>
+            <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path4498" Fill="{StaticResource linearGradient4526}" StrokeThickness="1.71282053" StrokeMiterLimit="4" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat" Opacity="1">
+                <Path.Data>
+                    <PathGeometry Figures="m 45.155553 207.54531 c -24.45818 0 -44.299144 19.84559 -44.299144 44.29818 0 24.4526 19.840964 44.3001 44.299144 44.3001 24.45818 0 44.29914 -19.8475 44.29914 -44.3001 0 -24.45259 -19.84096 -44.29818 -44.29914 -44.29818 z" FillRule="NonZero"/>
+                </Path.Data>
+            </Path>
+            <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path4494" Fill="#FE0078D7" StrokeThickness="0.98905444" StrokeMiterLimit="4" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat" Opacity="1">
+                <Path.Data>
+                    <PathGeometry Figures="m 45.156518 207.18343 c -24.64867 0 -44.66199077 20.01693 -44.66199077 44.66006 0 24.64314 20.01327577 44.66199 44.66199077 44.66199 24.648715 0 44.66006 -20.01885 44.66006 -44.66199 0 -24.64313 -20.01139 -44.66006 -44.66006 -44.66006 z m 0 3.38249 c 22.808852 0 41.267911 18.45685 41.267911 41.27757 0 22.82073 -18.459059 41.27758 -41.267911 41.27757 -22.808852 0 -41.2679113 -18.45684 -41.2679113 -41.27757 0 -22.82072 18.4590593 -41.27757 41.2679113 -41.27757 z" FillRule="NonZero"/>
+                </Path.Data>
+            </Path>
+            <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path3693" Fill="#FE0078D7" StrokeThickness="0.99999994" Stroke="#FFFCFCFC" StrokeMiterLimit="4" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat" Opacity="1">
+                <Path.Data>
+                    <PathGeometry Figures="m 19.775881 251.84514 v -17.0438 l 9.083171 8.52189 9.083171 8.52191 -9.083171 8.5219 -9.083171 8.52192 z m 11.994444 12.74649 v -4.29731 l 4.492826 -4.22459 4.492826 -4.22459 -4.492826 -4.22458 -4.492826 -4.22459 v -4.29732 -4.29731 l 9.083171 8.52189 9.083172 8.52191 -9.083172 8.5219 -9.083171 8.52192 z m 11.994443 0.16533 v -4.13201 l 4.669405 -4.3899 4.669402 -4.38991 -4.669402 -4.38991 -4.669405 -4.3899 v -4.132 -4.13199 l 9.08317 8.52189 9.083173 8.52191 -9.083173 8.5219 -9.08317 8.52192 z m 12.347221 -0.16533 v -4.29731 l 4.492826 -4.22459 4.492826 -4.22459 -4.492826 -4.22458 -4.492826 -4.22459 v -4.29732 -4.29731 l 9.08317 8.52189 9.083174 8.52191 -9.083174 8.5219 -9.08317 8.52192 z" FillRule="NonZero"/>
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+</ResourceDictionary>

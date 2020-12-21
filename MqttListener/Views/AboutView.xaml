@@ -1,0 +1,82 @@
+﻿<UserControl x:Class="MqttListener.Views.AboutView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:MqttListener.Views"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DesignHeight="650"
+             d:DesignWidth="900"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Media/icons.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="8*" />
+                <RowDefinition Height="13*" />
+                <RowDefinition Height="29*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Viewbox Grid.RowSpan="3"
+                     Margin="32"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Top">
+                <ContentControl Content="{StaticResource svg8}" />
+            </Viewbox>
+
+            <TextBlock Grid.Column="1"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontSize="32"
+                       Text="MQTT Listener" />
+
+            <TextBlock Grid.Row="1"
+                       Grid.Column="1"
+                       Margin="32 8"
+                       Text="Structured view of MQTT topics" />
+
+
+            <StackPanel Grid.Row="2"
+                        Grid.Column="1"
+                        Margin="32 8">
+                <TextBlock Foreground="AliceBlue"
+                           Text="Open Source Components / Libraries / Code" />
+                <TextBlock >
+                    <Hyperlink NavigateUri="https://github.com/mmanela/diffplex" RequestNavigate="Hyperlink_RequestNavigate">
+                        DiffPlex
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock >
+                    <Hyperlink NavigateUri="https://github.com/Kinnara/ModernWpf" RequestNavigate="Hyperlink_RequestNavigate">
+                        ModernWpfUI
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock >
+                    <Hyperlink NavigateUri="https://github.com/chkr1011/MQTTnet" RequestNavigate="Hyperlink_RequestNavigate">
+                        MQTTnet
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock >
+                    <Hyperlink NavigateUri="https://github.com/JamesNK/Newtonsoft.Json" RequestNavigate="Hyperlink_RequestNavigate">
+                        Newtonsoft.Json
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock >
+                    <Hyperlink NavigateUri="https://github.com/pierresprim/AttachedCommandBehavior" RequestNavigate="Hyperlink_RequestNavigate">
+                        AttachedCommandBehavior
+                    </Hyperlink>
+                </TextBlock>
+            </StackPanel>
+
+        </Grid>
+    </Grid>
+</UserControl>
