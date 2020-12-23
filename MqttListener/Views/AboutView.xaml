@@ -15,11 +15,15 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
+        <Grid x:Name="BackGrid">
+            <Canvas x:Name="BackCanvas" />
+        </Grid>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="8*" />
-                <RowDefinition Height="13*" />
-                <RowDefinition Height="29*" />
+                <RowDefinition Height="100" />
+                <RowDefinition Height="100" />
+                <RowDefinition Height="150" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="250" />
@@ -35,48 +39,65 @@
 
             <TextBlock Grid.Column="1"
                        HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       FontSize="32"
-                       Text="MQTT Listener" />
+                       VerticalAlignment="Center">
+                <Run FontSize="32"
+                     Text="MQTT Listener" />
+                <Run FontSize="14"
+                     Text="  v." />
+                <Run x:Name="VersionRun"
+                     FontSize="14" />
+            </TextBlock>
 
             <TextBlock Grid.Row="1"
                        Grid.Column="1"
-                       Margin="32 8"
+                       Margin="32,8"
                        Text="Structured view of MQTT topics" />
+
 
 
             <StackPanel Grid.Row="2"
                         Grid.Column="1"
-                        Margin="32 8">
+                        Margin="32,8">
                 <TextBlock Foreground="AliceBlue"
                            Text="Open Source Components / Libraries / Code" />
-                <TextBlock >
-                    <Hyperlink NavigateUri="https://github.com/mmanela/diffplex" RequestNavigate="Hyperlink_RequestNavigate">
+                <TextBlock>
+                    <Hyperlink NavigateUri="https://github.com/mmanela/diffplex"
+                               RequestNavigate="Hyperlink_RequestNavigate">
                         DiffPlex
                     </Hyperlink>
                 </TextBlock>
-                <TextBlock >
-                    <Hyperlink NavigateUri="https://github.com/Kinnara/ModernWpf" RequestNavigate="Hyperlink_RequestNavigate">
+                <TextBlock>
+                    <Hyperlink NavigateUri="https://github.com/Kinnara/ModernWpf"
+                               RequestNavigate="Hyperlink_RequestNavigate">
                         ModernWpfUI
                     </Hyperlink>
                 </TextBlock>
-                <TextBlock >
-                    <Hyperlink NavigateUri="https://github.com/chkr1011/MQTTnet" RequestNavigate="Hyperlink_RequestNavigate">
+                <TextBlock>
+                    <Hyperlink NavigateUri="https://github.com/chkr1011/MQTTnet"
+                               RequestNavigate="Hyperlink_RequestNavigate">
                         MQTTnet
                     </Hyperlink>
                 </TextBlock>
-                <TextBlock >
-                    <Hyperlink NavigateUri="https://github.com/JamesNK/Newtonsoft.Json" RequestNavigate="Hyperlink_RequestNavigate">
+                <TextBlock>
+                    <Hyperlink NavigateUri="https://github.com/JamesNK/Newtonsoft.Json"
+                               RequestNavigate="Hyperlink_RequestNavigate">
                         Newtonsoft.Json
                     </Hyperlink>
                 </TextBlock>
-                <TextBlock >
-                    <Hyperlink NavigateUri="https://github.com/pierresprim/AttachedCommandBehavior" RequestNavigate="Hyperlink_RequestNavigate">
+                <TextBlock>
+                    <Hyperlink NavigateUri="https://github.com/pierresprim/AttachedCommandBehavior"
+                               RequestNavigate="Hyperlink_RequestNavigate">
                         AttachedCommandBehavior
                     </Hyperlink>
                 </TextBlock>
             </StackPanel>
 
+            <TextBox x:Name="LicenseTextBox"
+                     Grid.Row="3"
+                     Grid.Column="1"
+                     Margin="8"
+                     IsReadOnly="True"
+                     VerticalScrollBarVisibility="Visible" />
         </Grid>
     </Grid>
 </UserControl>

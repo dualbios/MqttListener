@@ -5,14 +5,22 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <AssemblyVersion>0.2.0.0</AssemblyVersion>
-    <PackageVersion>0.2.0-alpha.1</PackageVersion>
-    <FileVersion>0.2.0.0</FileVersion>
+    <AssemblyVersion>0.2.0.2</AssemblyVersion>
+    <PackageVersion>0.2.0-alpha.2</PackageVersion>
+    <FileVersion>0.2.0.2</FileVersion>
     <PackageLicenseExpression>Apache-2.0 License</PackageLicenseExpression>
     <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
     <AssemblyName>MqttListener</AssemblyName>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Media\license.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Media\license.txt" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DiffPlex" Version="1.6.3" />
@@ -36,6 +44,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <!--<ItemGroup>
+    <EmbeddedResource Include="Media\license.txt" />
+  </ItemGroup>-->
 
   <ItemGroup>
     <Folder Include="Helpers\" />
